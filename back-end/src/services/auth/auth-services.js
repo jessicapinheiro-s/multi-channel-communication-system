@@ -39,7 +39,7 @@ export const login_validate = async ({ email, password }) => {
     });
 };
 
-export const create_user = async ({ name, email, password, phone }) => {
+export const create_user_auth = async ({ name, email, password, phone }) => {
   const hashedPassword = await bcrypt.hash(password, 10);
   const exists = await prisma.user.findUnique({
     where: {
@@ -60,3 +60,8 @@ export const create_user = async ({ name, email, password, phone }) => {
     },
   });
 };
+
+
+export const logout_user_auth = async ({ id_user }) => {
+  
+}
