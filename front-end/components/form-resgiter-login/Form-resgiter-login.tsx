@@ -44,13 +44,14 @@ export default function FormRegisterLogin(FormData: propsData) {
     return (
         <form
             onSubmit={handleSubmit((data: any) => handleSubmitF(data))}
-            className="flex flex-col"
+            className="bg-[#191A29] flex flex-col gap-6 w-full md:w-3/6 border p-5"
         >
             <div>
                 <h1>{type === 'login' ? 'Welcome back!' : 'Welcome!'}</h1>
             </div>
-            <div>
+            <div className="flex flex-col gap-4">
                 <input
+                    className="border rounded-2xl bg-transparent px-2 py-1"
                     type="text"
                     placeholder="Name"
                     value={form.name}
@@ -61,6 +62,7 @@ export default function FormRegisterLogin(FormData: propsData) {
                     required
                 />
                 <IMaskInput
+                    className="border rounded-2xl bg-transparent px-2 py-1"
                     type="text"
                     mask="+55 (00) 00000-0000"
                     placeholder="Phone Number"
@@ -72,6 +74,7 @@ export default function FormRegisterLogin(FormData: propsData) {
                     required
                 />
                 <IMaskInput
+                    className="border rounded-2xl bg-transparent px-2 py-1"
                     type="email"
                     mask={/^[\s\S]*$/}
                     placeholder="E-mail"
@@ -83,6 +86,7 @@ export default function FormRegisterLogin(FormData: propsData) {
                     required
                 />
                 <IMaskInput
+                    className="border rounded-2xl bg-transparent px-2 py-1"
                     type="password"
                     mask={/^[\s\S]*$/}
                     placeholder="Password"
@@ -94,7 +98,7 @@ export default function FormRegisterLogin(FormData: propsData) {
                     required
                 />
 
-                <button type="submit">
+                <button type="submit" className="bg-slate-600">
                     {type === "register" ? "Register" : "Login"}
                 </button>
 

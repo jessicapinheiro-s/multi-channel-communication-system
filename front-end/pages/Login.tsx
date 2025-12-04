@@ -5,7 +5,7 @@ export default function Login() {
 
     }
     return (
-        <main className="bg-black">
+        <main className="flex flex-col items-center justify-center">
             <FormRegisterLogin
                 handleSubmitFun={handleLoggin}
                 type="login"
