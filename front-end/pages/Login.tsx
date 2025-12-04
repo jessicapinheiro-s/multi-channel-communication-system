@@ -5,7 +5,7 @@ export default function Login() {
 
     }
     return (
-        <main>
+        <main className="bg-black">
             <FormRegisterLogin
                 handleSubmitFun={handleLoggin}
                 type="login"
