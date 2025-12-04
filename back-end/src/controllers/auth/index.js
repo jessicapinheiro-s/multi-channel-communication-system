@@ -1,4 +1,4 @@
-import { create_user_auth } from "../../services/auth/auth-services";
+import { create_user_auth, login_validate } from "../../services/auth/auth-services";
 import { create_user } from "../../services/user";
 
 const login = async (req, res) => {

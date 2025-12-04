@@ -1,6 +1,6 @@
 import prisma from "../../config/prisma.js";
 
-export const create_user = async ({ name, email, password, phone }) => {
+export const create_user = async ({ name, email, password, phone, warning_preference }) => {
   const exists = await prisma.user.findUnique({
     where: {
       email: email,
@@ -17,6 +17,7 @@ export const create_user = async ({ name, email, password, phone }) => {
       email: email,
       password: password,
       phone: phone,
+      warnings_preferences: warning_preference
     },
   });
 };
@@ -43,10 +44,7 @@ export const update_user = async ({ id_user, item_info }) => {
   const exists = await prisma.user.findUnique({
     where: {
       id: id_user,
-    },
-    data: {
-      item_info,
-    },
+    }
   });
 
   if (!exists) {
@@ -56,6 +54,9 @@ export const update_user = async ({ id_user, item_info }) => {
   return await prisma.user.update({
     where: {
       id: id_user,
+    },
+    data: {
+      ...item_info,
     },
   });
 };
