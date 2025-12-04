@@ -11,10 +11,14 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "@prisma/client": "^7.1.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "resend": "^6.5.2",
     "twilio": "^5.10.7"
+  },
+  "devDependencies": {
+    "prisma": "^7.1.0"
   }
 }

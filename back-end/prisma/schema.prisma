@@ -1,0 +1,40 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite" // ou "mysql", "sqlite", "sqlserver, postgresql"
+}
+
+// Exemplo de model
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String?
+  password  String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  phone      String?
+  warnings_preferences  String
+  warning_logs_sent    Warning_logs_sent[]
+}
+
+model Warnings {
+  id         Int      @id @default(autoincrement())
+  status     String
+  message    String
+  created_at DateTime @default(now())
+  waarning_logs_sent    Warning_logs_sent[]
+}
+
+model Warning_logs_sent {
+  id         Int      @id @default(autoincrement())
+  warningId  Int
+  user_id    Int 
+  sent_at    DateTime @default(now())
+  channel    String
+  created_at DateTime @default(now())
+
+  warning    Warnings @relation(fields: [warningId], references: [id])
+  user       User     @relation(fields: [user_id], references: [id])
+}

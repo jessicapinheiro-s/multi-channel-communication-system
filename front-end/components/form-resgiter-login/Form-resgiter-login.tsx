@@ -44,7 +44,7 @@ export default function FormRegisterLogin(FormData: propsData) {
     return (
         <form
             onSubmit={handleSubmit((data: any) => handleSubmitF(data))}
-            className="bg-[#191A29] flex flex-col gap-6 w-full md:w-3/6 border p-5"
+            className="bg-[#191A29] flex flex-col gap-6 w-full md:w-3/6 border p-5 text-white"
         >
             <div>
                 <h1>{type === 'login' ? 'Welcome back!' : 'Welcome!'}</h1>
