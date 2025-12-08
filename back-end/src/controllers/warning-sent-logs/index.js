@@ -3,7 +3,7 @@ import {
   f_get_all_warning_sent_logs,
 } from "@/services/warning-sent-logs";
 
-const create_warning_sent_log = async (req, res) => {
+export const create_warning_sent_log = async (req, res) => {
   const { user_id, warningId, channel, sent_at } = req.body;
   if (!user_id || !warningId || !channel || !sent_at) {
     return res.status(400).json({ error: "Missing required fields" });
@@ -28,7 +28,7 @@ const create_warning_sent_log = async (req, res) => {
   }
 };
 
-const get_all_warning_sent_logs = async (req, res) => {
+export const get_all_warning_sent_logs = async (req, res) => {
   try {
     const response = await f_get_all_warning_sent_logs();
 
@@ -44,7 +44,7 @@ const get_all_warning_sent_logs = async (req, res) => {
   }
 };
 
-const get_waning_by_warning_id = async(req, res) => {
+export const get_waning_by_warning_id = async(req, res) => {
     const { warning_id } = req.params;
 
     if(!warning_id) {
