@@ -1,25 +1,36 @@
 import { create_user_auth, login_validate } from "../../services/auth/auth-services";
-import { create_user } from "../../services/user";
 
-const login = async (req, res) => {
+export const login = async (req, res) => {
+
+  if(!req?.body) {
+    return res.status(400).json({ error: "Invalid request" });
+  }
+
   try {
-    await login_validate(req.body);
+    const response = await login_validate(req.body);
+    return res.status(201).json(response)
   } catch (error) {
-    return res.status(4001).json({ error: error.message });
+    return res.status(401).json({ error: error.message });
   }
 };
-const register = async (req, res) => {
-  const { name, email, password, phone } = req.body;
+export const register = async (req, res) => {
+  if(!req?.body) {
+    return res.status(400).json({ error: "Invalid request" });
+  }
+  const { name, email, password, phone, user_preferences } = req.body;
   try {
-    await create_user_auth({name, email, password, phone});
+    const response = await create_user_auth({name, email, password, phone,  user_preferences});
+    return res.status(200).json(response)
+
   } catch (error) {
-    return res.status(4001).json({ error: error.message });
+    return res.status(401).json({ error: error.message });
   }
 };
 
-const logout = async (req, res) => {
+export const logout = async (req, res) => {
   try {
+    //return res.status(200).json(response)
   } catch (error) {
-    return res.status(4001).json({ error: error.message });
+    return res.status(401).json({ error: error.message });
   }
 };

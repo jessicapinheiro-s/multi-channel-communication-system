@@ -16,6 +16,7 @@ model User {
   updated_at DateTime @updatedAt
   phone      String?
   warnings_preferences  String
+  role     String   @default("user")
   warning_logs_sent    Warning_logs_sent[]
 }
 
