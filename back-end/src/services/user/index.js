@@ -1,6 +1,6 @@
 import prisma from "../../config/prisma.js";
 
-export const create_user = async ({ name, email, password, phone, warning_preference }) => {
+export const f_create_user = async ({ name, email, password, phone, warning_preference }) => {
   const exists = await prisma.user.findUnique({
     where: {
       email: email,
@@ -22,7 +22,7 @@ export const create_user = async ({ name, email, password, phone, warning_prefer
   });
 };
 
-export const delete_user = async ({ id_user }) => {
+export const f_delete_user = async ({ id_user }) => {
   const exists = await prisma.user.findUnique({
     where: {
       id: id_user,
@@ -40,7 +40,7 @@ export const delete_user = async ({ id_user }) => {
   });
 };
 
-export const update_user = async ({ id_user, item_info }) => {
+export const f_update_user = async ({ id_user, item_info }) => {
   const exists = await prisma.user.findUnique({
     where: {
       id: id_user,
@@ -61,7 +61,7 @@ export const update_user = async ({ id_user, item_info }) => {
   });
 };
 
-export const get_by_email = async ({ email }) => {
+export const f_get_by_email = async ({ email }) => {
   return await prisma.user.findUnique({
     where: {
       email: email,
@@ -69,7 +69,7 @@ export const get_by_email = async ({ email }) => {
   });
 };
 
-export const get_by_id = async ({ user_id }) => {
+export const f_get_by_id = async ({ user_id }) => {
   return await prisma.user.findUnique({
     where: {
       id: user_id,

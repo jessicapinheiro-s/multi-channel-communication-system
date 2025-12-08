@@ -2,7 +2,7 @@ import bcrypt from "bcryptjs";
 import prisma from "../../config/prisma.js";
 import { generate_jwt_token } from "@/utils/utils.js";
 
-export const login_validate = async ({ email, password }) => {
+export const f_login_validate = async ({ email, password }) => {
   const exists = await prisma.user.findUnique({
     where: {
       email: email,
@@ -33,7 +33,7 @@ export const login_validate = async ({ email, password }) => {
   return token ? {token} : null;
 };
 
-export const create_user_auth = async ({ name, email, password, phone, user_preferences }) => {
+export const f_create_user_auth = async ({ name, email, password, phone, user_preferences }) => {
   const hashedPassword = await bcrypt.hash(password, 10);
   const exists = await prisma.user.findUnique({
     where: {
@@ -59,4 +59,4 @@ export const create_user_auth = async ({ name, email, password, phone, user_pref
   return user_created;
 };
 
-export const logout_user_auth = async ({ id_user }) => {};
+export const f_logout_user_auth = async ({ id_user }) => {};
