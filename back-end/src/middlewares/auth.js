@@ -8,7 +8,7 @@ export const auth = (req, res, next) => {
   }
 
   try {
-    const auth_header = req.header.authorization;
+    const auth_header = req.headers.authorization;
     const token_info = auth_header.split(" ");
 
     if (token_info[0] !== "Bearer" && !token_info[1]) {
@@ -24,3 +24,18 @@ export const auth = (req, res, next) => {
     return res.status(4001).json({ error: error.message });
   }
 };
+
+export const isAdmin = async(req, res, next) => {
+
+}
+
+export const validate_create_user = async(req, res, next) => {
+
+}
+export const validate_create_warning = async(req, res, next) => {
+
+}
+
+export const validate_create_warning_log_sent = async(req, res, next) => {
+
+}
