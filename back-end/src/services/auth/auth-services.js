@@ -22,7 +22,7 @@ export const f_login_validate = async ({ email, password }) => {
     email: exists.email,
     role: exists.role,
   };
-  const secret = process.env.JWT_TOKEN;
+  const secret = process.env.JWT_SECRET;
 
   if (!secret) {
     throw new Error("JWT secret not defined");
