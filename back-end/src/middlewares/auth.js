@@ -10,14 +10,14 @@ import {
   deleteSchema,
   getByEmail,
   getById,
-} from "@/schemas";
+} from "../schemas/index.js";
 
 /* ======================================================
    AUTH
 ====================================================== */
 
 export const auth = (req, res, next) => {
-  const secret = process.env.JWT_SECRET;
+  const secret = process.env.JWT_TOKEN;
 
   if (!secret) {
     return res.status(500).json({ error: "Internal server error" });
@@ -70,7 +70,8 @@ const validate = (schema, property = "body") => {
     } catch (error) {
       if (error instanceof ZodError) {
         return res.status(400).json({
-          errors: error.errors.map(err => ({
+          // @ts-ignore
+          errors: error.errors.map((err) => ({
             field: err.path.join("."),
             message: err.message,
           })),
@@ -98,5 +99,6 @@ export const validateGetUserByEmail = validate(getByEmail);
 
 // WARNING
 export const validateCreateWarning = validate(createWarningSchema);
-export const validateCreateWarningSentLog =
-  validate(createWarningSentLogSchema);
+export const validateCreateWarningSentLog = validate(
+  createWarningSentLogSchema
+);

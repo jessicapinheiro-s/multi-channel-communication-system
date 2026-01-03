@@ -1,7 +1,7 @@
 import {
   f_create_warning_sent_log,
   f_get_all_warning_sent_logs,
-} from "@/services/warning-sent-logs";
+} from "../../services/warning-sent-logs";
 
 export const create_warning_sent_log = async (req, res) => {
   const { user_id, warningId, channel, sent_at } = req.body;

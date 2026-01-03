@@ -6,7 +6,7 @@ import {
     update,
     create
 } from '../../controllers/user/index.js';
-import { auth } from '@/middlewares/auth.js';
+import { auth } from '../../middlewares/auth.js';
 
 const router_user = Router();
 

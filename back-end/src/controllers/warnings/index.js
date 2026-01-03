@@ -1,4 +1,4 @@
-import { f_create_warning, f_delete_warning, f_get_by_id_warning, f_update_warning } from "@/services/warnings";
+import { f_create_warning, f_delete_warning, f_get_by_id_warning, f_update_warning } from "../../services/warnings";
 
 export const create_warning = async (req, res) => {
     const { title, message } = req.body;

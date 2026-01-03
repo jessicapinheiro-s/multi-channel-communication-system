@@ -3,7 +3,7 @@ import {
   delete_warning,
   get_by_id_warning,
   update_warning,
-} from "@/controllers/warnings";
+} from "../../controllers/warnings";
 import { Router } from "express";
 import auth from "../auth";
 const router_warning = Router();

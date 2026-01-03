@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import prisma from "../../config/prisma.js";
-import { generate_jwt_token } from "@/utils/utils.js";
+import { generate_jwt_token } from "../../utils/utils.js";
 
 export const f_login_validate = async ({ email, password }) => {
   const exists = await prisma.user.findUnique({
@@ -24,16 +24,34 @@ export const f_login_validate = async ({ email, password }) => {
   };
   const secret = process.env.JWT_TOKEN;
 
-  if(!secret) {
+  if (!secret) {
     throw new Error("JWT secret not defined");
+  }
+
+  if (!user_payload) {
+    throw new Error("User payload is empty");
   }
 
   const token = generate_jwt_token(user_payload, secret, "1h");
 
-  return token ? {token} : null;
+  return token
+    ? {
+        token,
+        user: {
+          id: exists.id,
+          name: exists.name,
+        },
+      }
+    : null;
 };
 
-export const f_create_user_auth = async ({ name, email, password, phone, user_preferences }) => {
+export const f_create_user_auth = async ({
+  name,
+  email,
+  password,
+  phone,
+  user_preferences,
+}) => {
   const hashedPassword = await bcrypt.hash(password, 10);
   const exists = await prisma.user.findUnique({
     where: {
@@ -45,18 +63,17 @@ export const f_create_user_auth = async ({ name, email, password, phone, user_pr
     throw new Error("User already exists");
   }
 
-  const user_created =  await prisma.user.create({
+  const user_created = await prisma.user.create({
     data: {
       name: name,
       email: email,
       password: hashedPassword,
       phone: phone,
       role: "user",
-      warnings_preferences:user_preferences
+      warnings_preferences: user_preferences,
     },
   });
 
   return user_created;
 };
 
-export const f_logout_user_auth = async ({ id_user }) => {};
