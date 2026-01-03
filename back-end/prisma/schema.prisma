@@ -25,7 +25,7 @@ model Warnings {
   status     String
   message    String
   created_at DateTime @default(now())
-  waarning_logs_sent    Warning_logs_sent[]
+  warning_logs_sent    Warning_logs_sent[]
 }
 
 model Warning_logs_sent {
