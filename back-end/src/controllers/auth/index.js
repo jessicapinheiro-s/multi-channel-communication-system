@@ -1,4 +1,4 @@
-import { f_create_user_auth, f_login_validate } from "../../services/auth/auth-services";
+import { f_create_user_auth, f_login_validate } from "../../services/auth/auth-services.js";
 
 export const login = async (req, res) => {
 

@@ -3,9 +3,9 @@ import {
   delete_warning,
   get_by_id_warning,
   update_warning,
-} from "../../controllers/warnings";
+} from "../../controllers/warnings/index.js";
 import { Router } from "express";
-import auth from "../auth";
+import auth from "../auth/index.js";
 const router_warning = Router();
 
 router_warning.post("/create", auth, create_warning);

@@ -4,7 +4,7 @@ import {
   f_update_user,
   f_get_by_id,
   f_get_by_email,
-} from "../../services/user";
+} from "../../services/user/index.js";
 
 export const create = async (req, res) => {
   const { name, email, password, phone, warning_preference } = req.body;

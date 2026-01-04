@@ -3,7 +3,7 @@ import {
   f_delete_warning,
   f_get_by_id_warning,
   f_update_warning,
-} from "../../services/warnings";
+} from "../../services/warnings/index.js";
 
 export const create_warning = async (req, res) => {
   const { status, message } = req.body;

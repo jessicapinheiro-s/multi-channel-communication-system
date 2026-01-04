@@ -1,4 +1,4 @@
-import prisma from "../../config/prisma";
+import prisma from "../../config/prisma.js";
 
 export const f_create_warning_sent_log = async ({
   user_id,

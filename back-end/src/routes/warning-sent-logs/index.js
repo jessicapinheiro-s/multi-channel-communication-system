@@ -1,6 +1,6 @@
-import { create_warning_sent_log, get_all_warning_sent_logs, get_waning_by_warning_id } from '../../controllers/warning-sent-logs';
+import { create_warning_sent_log, get_all_warning_sent_logs, get_waning_by_warning_id } from '../../controllers/warning-sent-logs/index.js';
 import {Router} from 'express';
-import auth from '../auth';
+import auth from '../auth/index.js';
 const router_warning_sent_logs = Router();
 
 

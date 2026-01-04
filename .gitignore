@@ -1,10 +1,26 @@
-# node modules (root and subfolders)
+# Node modules (root and subfolders)
 node_modules/
 **/node_modules/
 
-# env files
-*.env
+# Environment files
+.env
+.env.*
 
 # build
 dist/
 build/
+
+# OS files
+.DS_Store
+
+# Editor directories
+.vscode/
+.idea/
+
+# Optional: ignore local npm/yarn lock changes if you don't want them
+# package-lock.json
+# yarn.lock
+
+# Keep explicit ignores for subproject node_modules (redundant but explicit)
+/front-end/node_modules/
+/back-end/node_modules/

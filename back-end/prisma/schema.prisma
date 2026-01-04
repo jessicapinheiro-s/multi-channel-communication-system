@@ -4,6 +4,7 @@ generator client {
 
 datasource db {
   provider = "sqlite" // ou "mysql", "sqlite", "sqlserver, postgresql"
+  url = env("DATABASE_URL_DEV")
 }
 
 // Exemplo de model
