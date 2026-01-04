@@ -70,7 +70,7 @@ export const f_create_user_auth = async ({
       password: hashedPassword,
       phone: phone,
       role: "user",
-      warnings_preferences: user_preferences,
+      warnings_preferences: user_preferences ?? 'email',
     },
   });
 
