@@ -2,108 +2,124 @@ import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { IMaskInput } from "react-imask";
-import { useState } from "react";
+import { Link } from "react-router-dom";
 
-const schema = yup.object().shape({
-    email: yup.string().email("Invalid email format").required("Email is required"),
-    name: yup.string().min(2, "Name must be at least 2 characters").required("Name is required"),
-    password: yup.string().min(6, "Password must be at least 6 characters").required("Password is required"),
-    phone: yup.string().matches(/^\(\d{3}\) \d{3}-\d{4}$/, "Phone number is not valid").required("Phone number is required"),
-});
-
-
-interface propsData {
+interface PropsData {
     type: "register" | "login";
-    handleSubmitFun: (data: any) => void;
+    handleSubmitFun: (data: FormData) => void;
 }
 
-type FormData = {
-    name: string;
+export type FormData = {
+    name?: string;
     email: string;
     password: string;
-    phone: string;
+    phone?: string;
 };
 
-export default function FormRegisterLogin(FormData: propsData) {
-    const { type, handleSubmitFun } = FormData;
-    const [form, setForm] = useState<FormData>({
-        name: "",
-        email: "",
-        password: "",
-        phone: ""
+const loginSchema = yup.object({
+    email: yup.string().email("Invalid email format").required("Email is required"),
+    password: yup.string().min(6, "Password must be at least 6 characters").required("Password is required"),
+});
+
+const registerSchema = yup.object({
+    name: yup.string().min(2, "Name must be at least 2 characters").required("Name is required"),
+    email: yup.string().email("Invalid email format").required("Email is required"),
+    password: yup.string().min(6, "Password must be at least 6 characters").required("Password is required"),
+    phone: yup.string().required("Phone number is required"),
+});
+
+export default function FormRegisterLogin({ type, handleSubmitFun }: PropsData) {
+    const {
+        control,
+        register,
+        handleSubmit,
+        formState: { errors, isSubmitting },
+    } = useForm<FormData>({
+        resolver: yupResolver(type === "register" ? registerSchema : loginSchema),
+        defaultValues: {
+            name: "",
+            email: "",
+            password: "",
+            phone: "",
+        },
     });
 
-    const { control, handleSubmit, formState: { errors } } = useForm({
-        resolver: yupResolver(schema),
-    });
-
-    const handleSubmitF = async (data: any) => {
-        handleSubmitFun(data)
-    }
+    const onSubmit = async (data: FormData) => {
+        await handleSubmitFun(data);
+    };
 
     return (
         <form
-            onSubmit={handleSubmit((data: any) => handleSubmitF(data))}
+            onSubmit={handleSubmit(onSubmit)}
             className="bg-[#191A29] flex flex-col gap-6 w-full md:w-3/6 border p-5 text-white"
         >
             <div>
-                <h1>{type === 'login' ? 'Welcome back!' : 'Welcome!'}</h1>
+                <h1 className="text-2xl font-semibold">{type === "login" ? "Welcome back!" : "Create your account"}</h1>
             </div>
+
             <div className="flex flex-col gap-4">
+                {type === "register" && (
+                    <>
+                        <input
+                            {...register("name")}
+                            className="border rounded-2xl bg-transparent px-2 py-1"
+                            type="text"
+                            placeholder="Name"
+                            aria-label="name"
+                        />
+                        {errors.name && <p className="text-sm text-red-400">{(errors.name as any).message}</p>}
+
+                        <Controller
+                            name="phone"
+                            control={control}
+                            render={({ field }) => (
+                                <IMaskInput
+                                    {...field}
+                                    className="border rounded-2xl bg-transparent px-2 py-1"
+                                    mask="+55 (00) 00000-0000"
+                                    placeholder="Phone Number"
+                                    onAccept={(value: any) => field.onChange(value)}
+                                />
+                            )}
+                        />
+                        {errors.phone && <p className="text-sm text-red-400">{(errors.phone as any).message}</p>}
+                    </>
+                )}
+
                 <input
-                    className="border rounded-2xl bg-transparent px-2 py-1"
-                    type="text"
-                    placeholder="Name"
-                    value={form.name}
-                    onChange={(e) => setForm({
-                        ...form,
-                        name: e.target.value
-                    })}
-                    required
-                />
-                <IMaskInput
-                    className="border rounded-2xl bg-transparent px-2 py-1"
-                    type="text"
-                    mask="+55 (00) 00000-0000"
-                    placeholder="Phone Number"
-                    value={form.phone}
-                    onAccept={(value: any) => setForm({
-                        ...form,
-                        phone: value
-                    })}
-                    required
-                />
-                <IMaskInput
+                    {...register("email")}
                     className="border rounded-2xl bg-transparent px-2 py-1"
                     type="email"
-                    mask={/^[\s\S]*$/}
                     placeholder="E-mail"
-                    value={form.phone}
-                    onAccept={(value: any) => setForm({
-                        ...form,
-                        email: value
-                    })}
-                    required
+                    aria-label="email"
                 />
-                <IMaskInput
+                {errors.email && <p className="text-sm text-red-400">{(errors.email as any).message}</p>}
+
+                <input
+                    {...register("password")}
                     className="border rounded-2xl bg-transparent px-2 py-1"
                     type="password"
-                    mask={/^[\s\S]*$/}
                     placeholder="Password"
-                    value={form.phone}
-                    onAccept={(value: any) => setForm({
-                        ...form,
-                        phone: value
-                    })}
-                    required
+                    aria-label="password"
                 />
+                {errors.password && <p className="text-sm text-red-400">{(errors.password as any).message}</p>}
 
-                <button type="submit" className="bg-slate-600">
-                    {type === "register" ? "Register" : "Login"}
-                </button>
+                <div className="flex items-center justify-between gap-4">
+                    <button disabled={isSubmitting} type="submit" className="bg-slate-600 px-4 py-2 rounded">
+                        {type === "register" ? "Register" : "Login"}
+                    </button>
 
-                {errors.email && <p>{errors.email.message}</p>}
+                    {type === "login" ? (
+                        <Link to="/register" className="text-sm underline">
+                            Create account
+                        </Link>
+                    ) : (
+                        <Link to="/login" className="text-sm underline">
+                            Already have an account?
+                        </Link>
+                    )}
+                </div>
             </div>
         </form>
-    )
+    );
 }
