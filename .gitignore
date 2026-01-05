@@ -24,3 +24,5 @@ build/
 # Keep explicit ignores for subproject node_modules (redundant but explicit)
 /front-end/node_modules/
 /back-end/node_modules/
+*.db
+*.db-journal
