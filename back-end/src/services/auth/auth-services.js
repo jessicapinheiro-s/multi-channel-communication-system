@@ -33,14 +33,11 @@ export const f_login_validate = async ({ email, password }) => {
   }
 
   const token = generate_jwt_token(user_payload, secret, "1h");
-
+  const user = exists;
   return token
     ? {
         token,
-        user: {
-          id: exists.id,
-          name: exists.name,
-        },
+        user
       }
     : null;
 };
