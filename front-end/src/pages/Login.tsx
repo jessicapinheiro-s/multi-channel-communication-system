@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import FormRegisterLogin from "../components/form-resgiter-login/form-resgiter-login"
 import { useState } from "react";
+import FormRegisterLogin from "../components/form-resgiter-login/Form-resgiter-login";
 import LoadingModal from "../components/modals/loanding-modal";
 
 interface LoginDataProps {

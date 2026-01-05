@@ -1,7 +1,8 @@
 import { useState } from "react";
-import LoadingModal from "../components/modals/loanding-modal";
-import FormRegisterLogin from "../components/form-resgiter-login/form-resgiter-login";
+
 import { useNavigate } from "react-router-dom";
+import FormRegisterLogin from "../components/form-resgiter-login/Form-resgiter-login";
+import LoadingModal from "../components/modals/loanding-modal";
 interface RegisterDataProps {
     name?: string;
     email: string;
@@ -11,7 +12,7 @@ interface RegisterDataProps {
 export default function Register() {
     const navigate = useNavigate();
     const ambiente = import.meta.env.VITE_AMBIENTE_API;
-    const [isLoanding, setIsLoading]  = useState(false);
+    const [isLoanding, setIsLoading] = useState(false);
     const handleRegister = async (data: RegisterDataProps) => {
         const obj_to_create = {
             name: data.name || '',
@@ -46,8 +47,8 @@ export default function Register() {
     return (
         <main className="flex flex-col items-center justify-center">
             <FormRegisterLogin handleSubmitFun={handleRegister} type="register" />
- <LoadingModal open={isLoanding} message="Registering user..." />
-           
+            <LoadingModal open={isLoanding} message="Registering user..." />
+
         </main>
     );
 }
