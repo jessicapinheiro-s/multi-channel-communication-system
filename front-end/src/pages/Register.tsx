@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import { useNavigate } from "react-router-dom";
 import FormRegisterLogin from "../components/form-resgiter-login/Form-resgiter-login";
-import LoadingModal from "../components/modals/loanding-modal";
+import LoadingModal from "../components/modals/Loanding-modal";
 interface RegisterDataProps {
     name?: string;
     email: string;

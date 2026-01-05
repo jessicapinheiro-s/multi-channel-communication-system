@@ -1,8 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import FormRegisterLogin from "../components/form-resgiter-login/Form-resgiter-login";
-import LoadingModal from "../components/modals/loanding-modal";
 
+import { useUserStore } from "../../stores/user";
+import LoadingModal from "../components/modals/Loanding-modal";
 interface LoginDataProps {
     email: string;
     password: string;
@@ -12,7 +13,9 @@ export default function Login() {
     const navigate = useNavigate();
     const ambiente = import.meta.env.VITE_AMBIENTE_API;
     const [isLoanding, setIsLoading] = useState(false);
+    const { setUser } = useUserStore();
     const handleLoggin = async (data: LoginDataProps) => {
+    
         const obj_to_login = {
             email: data.email,
             password: data.password
@@ -33,7 +36,15 @@ export default function Login() {
             }
             const responseData = await response.json();
             const user = responseData;
+            if(user) {
+                setUser(user);
+            }
+            if(user.role === 'admin') {
+                navigate('/dashboard-admin');
 
+            }else{
+                navigate('/dashboard-user');
+            }
             console.log('Login successful, user:', user);
 
 
