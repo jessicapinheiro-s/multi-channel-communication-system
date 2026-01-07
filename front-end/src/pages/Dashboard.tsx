@@ -386,7 +386,7 @@ export default function DashboardAdmin() {
                           <p className="text-gray-600">Nome: {campaigns?.name?.charAt(0).toLocaleUpperCase().concat(campaigns.name.slice(1))}</p>
                           <p>Status: {campaigns.status}</p>
                           <p>Criado em: {campaigns?.created_at ? new Date(campaigns.created_at).toLocaleDateString('pt-br') : ''}</p>
-                          <p className="text-gray-600">Mensagem: {(campaigns.message).slice(0, 20)}</p>
+                          <p className="text-gray-600">Mensagem: {(campaigns.message).slice(0, 100)}</p>
                         </div>
                         <button
                           type="button"
