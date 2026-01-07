@@ -1,6 +1,7 @@
 import {
   create_warning,
   delete_warning,
+  get_all_warnings,
   get_by_id_warning,
   update_warning,
 } from "../../controllers/warnings/index.js";
@@ -12,5 +13,6 @@ router_warning.post("/create", auth, create_warning);
 router_warning.patch("/update", auth, update_warning);
 router_warning.delete("/delete", auth, delete_warning);
 router_warning.get("/get-by-id", auth, get_by_id_warning);
+router_warning.get('/get-all', auth, get_all_warnings);
 
 export default router_warning;

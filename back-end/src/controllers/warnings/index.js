@@ -1,6 +1,7 @@
 import {
   f_create_warning,
   f_delete_warning,
+  f_get_all_warnings,
   f_get_by_id_warning,
   f_update_warning,
 } from "../../services/warnings/index.js";
@@ -63,3 +64,19 @@ export const get_by_id_warning = async (req, res) => {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+export const get_all_warnings = async (req, res) => {
+   try {
+      const response = await f_get_all_warnings();
+  
+      if (!response) {
+        return res
+          .status(401)
+          .json({ error: "Could not fetch warningss" });
+      }
+  
+      return res.status(200).json(response);
+    } catch (error) {
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+}

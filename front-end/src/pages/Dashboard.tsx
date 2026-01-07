@@ -218,19 +218,19 @@ export default function DashboardAdmin() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Card title="Total de campanhas">
             <p className="text-4xl font-bold text-gray-900">
-              {totalCampaigns}
+              {totalCampaigns || 0}
             </p>
           </Card>
 
           <Card title="Campanhas por SMS">
             <p className="text-4xl font-bold text-green-600">
-              {smsCampaigns}
+              {smsCampaigns || 0}
             </p>
           </Card>
 
           <Card title="Campanhas por Email">
             <p className="text-4xl font-bold text-indigo-600">
-              {emailCampaigns}
+              {emailCampaigns || 0}
             </p>
           </Card>
         </div>

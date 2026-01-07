@@ -65,3 +65,12 @@ export const f_get_by_id_warning = async ({ id }) => {
     throw new Error("Error geting warning by Id: " + error.message);
   }
 };
+
+export const f_get_all_warnings = async () => {
+  try {
+    const response = await prisma.warnings.findMany();
+    return response;
+  } catch (error) {
+    throw new Error("Error geting all warning sent logs: " + error.message);
+  }
+}
