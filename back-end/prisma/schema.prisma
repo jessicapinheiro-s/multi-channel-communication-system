@@ -38,3 +38,11 @@ model Warning_logs_sent {
   user       User     @relation(fields: [user_id], references: [id])
   warning    Warnings @relation(fields: [warningId], references: [id])
 }
+
+model Recipient {
+  id         Int      @id @default(autoincrement())
+  email      String
+  phone      String?
+  preferences String?
+  created_at DateTime @default(now())
+}
