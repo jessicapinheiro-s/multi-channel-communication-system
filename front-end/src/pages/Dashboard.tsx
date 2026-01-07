@@ -39,6 +39,7 @@ export interface Warning {
   id: number;
   status: string;
   message: string;
+  name: string;
   created_at: string; // ou Date, dependendo do fetch
   warning_logs_sent?: WarningLogSent[];
 }
@@ -60,7 +61,8 @@ export default function DashboardAdmin() {
   const {user} = useUserStore();
   const [campaign_info, setCampaignInfo] = useState({
     message: "",
-    channel: "sms"
+    channel: "sms",
+    name: ""
   });
   const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
   const [toastOpen, setToastOpen] = useState(false);
@@ -145,13 +147,15 @@ export default function DashboardAdmin() {
   })
 
 
-  const handleIniciarCampanha = async (campaign?: { message: string; channel: string }) => {
+  const handleIniciarCampanha = async (campaign?: { message: string; channel: string; name?: string; title?: string }) => {
     const campaignToSend = campaign ?? campaign_info;
     const objt_warning_to_create = {
       status: "created",
       message: campaignToSend.message,
       channel: campaignToSend.channel,
-    }
+      // backend expects `title` to populate Warnings.name; prefer explicit title, then name, then a short message fallback
+      title: (campaignToSend as any).title ?? campaignToSend.name ?? (campaignToSend.message || '').slice(0, 30),
+    };
     setIsLoading(true);
     try {
       const response = await fetch(`${ambiente}/warnings/create`, {
@@ -379,7 +383,9 @@ export default function DashboardAdmin() {
                     <Card key={campaigns.id} title={""}>
                       <div className="flex flex-row items-center justify-between">
                         <div>
-                          <p className="text-gray-600">Status: {campaigns.status.charAt(0).toLocaleUpperCase().concat(campaigns.status.slice(1))}</p>
+                          <p className="text-gray-600">Nome: {campaigns?.name?.charAt(0).toLocaleUpperCase().concat(campaigns.name.slice(1))}</p>
+                          <p>Status: {campaigns.status}</p>
+                          <p>Criado em: {campaigns?.created_at ? new Date(campaigns.created_at).toLocaleDateString('pt-br') : ''}</p>
                           <p className="text-gray-600">Mensagem: {(campaigns.message).slice(0, 20)}</p>
                         </div>
                         <button
@@ -436,7 +442,7 @@ export default function DashboardAdmin() {
           setCampaignInfo(value);
           setIsMessageModalOpen(false);
           // call passing the new campaign data
-          handleIniciarCampanha({ message: value.message, channel: value.channel });
+          handleIniciarCampanha({ message: value.message, channel: value.channel, name: value.name });
         }}
       />
 

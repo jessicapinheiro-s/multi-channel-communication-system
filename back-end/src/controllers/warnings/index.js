@@ -7,7 +7,9 @@ import {
 } from "../../services/warnings/index.js";
 
 export const create_warning = async (req, res) => {
-  const { status, message, title } = req.body;
+  // Accept either `title` or `name` from the client. Older clients may send `name`.
+  const { status, message } = req.body;
+  const title = req.body.title ?? req.body.name ?? '';
 
   if (!message) {
     return res.status(400).json({ error: "Missing required fields" });

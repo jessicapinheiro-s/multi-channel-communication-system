@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 interface CampaignData {
   message: string;
   channel: string;
+  name: string;
 }
 
 interface MessageFormModalProps {
@@ -16,7 +17,7 @@ interface MessageFormModalProps {
 
 export default function MessageFormModal({
   open,
-  initialValue = { message: "", channel: "sms" },
+  initialValue = { message: "", channel: "sms", name: "" },
   title = "Enviar mensagem",
   submitLabel = "Enviar",
   onClose,
@@ -24,6 +25,8 @@ export default function MessageFormModal({
 }: MessageFormModalProps) {
   const [value, setValue] = useState<CampaignData>(initialValue);
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
+  const inputRefName = useRef<HTMLTextAreaElement | null>(null);
+
 
   useEffect(() => {
     setValue(initialValue);
@@ -75,6 +78,16 @@ export default function MessageFormModal({
             <option value="sms">SMS</option>
             <option value="email">Email</option>
           </select>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Nome
+          </label>
+          <input
+            type="text"
+            value={value.name}
+            onChange={(e) => setValue({ ...value, name: e.target.value })}
+            className="w-full border border-gray-300 rounded px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Digite o nome da campanha"
+          />
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Mensagem
           </label>
