@@ -100,7 +100,7 @@ export default function DashboardAdmin() {
   });
 
   const fetchCampaigns = async (pageParam: number): Promise<Warning[]> => {
-    const response = await fetch(`${ambiente}/warnings_logs/get-all`);
+    const response = await fetch(`${ambiente}/warnings/get-all`);
     return response.json();
   }
   const fetchMessages = async (pageParam: number): Promise<WarningLogSent[]> => {
@@ -118,6 +118,8 @@ export default function DashboardAdmin() {
     enabled: selectedMenu === 'campanhas',
     placeholderData: keepPreviousData,
   })
+
+  console.log(data_campaigns)
   const {
     data: data_messages,
   } = useQuery({
@@ -262,9 +264,10 @@ export default function DashboardAdmin() {
             selectedMenu === 'campanhas' ? (
               <div>
                 {
-                  data_campaigns?.map((campaigns: any) => (
-                    <Card key={campaigns.id} title={campaigns.title}>
-                      <p className="text-gray-600">{campaigns.content}</p>
+                  data_campaigns?.map((campaigns: Warning) => (
+                    <Card key={campaigns.id} title={""}>
+                      <p className="text-gray-600">Status: {campaigns.status.charAt(0).toLocaleUpperCase().concat(campaigns.status.slice(1))}</p>
+                      <p className="text-gray-600">Mensagem: {(campaigns.message).slice(0,20)}</p>
                     </Card>
                   ))
                 }
@@ -272,9 +275,11 @@ export default function DashboardAdmin() {
             ) : (
               <div>
                 {
-                  data_messages?.map((message: any) => (
-                    <Card key={message.id} title={message.title}>
-                      <p className="text-gray-600">{message.content}</p>
+                  data_messages?.map((message: WarningLogSent) => (
+                    <Card key={message.id} title={""}>
+                      <p className="text-gray-600">{message.user?.name}</p>
+                      <p>{message.created_at}</p>
+                      <p>{message.channel}</p>
                     </Card>
                   ))
                 }
