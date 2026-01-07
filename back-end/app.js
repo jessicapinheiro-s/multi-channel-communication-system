@@ -22,5 +22,6 @@ app.use("/warnings_logs", router_warning_sent_logs);
 app.use("/warnings", router_warning);
 app.use("/auth", auth_router);
 app.use("/recipients", router_recipient);
+app.use("/receptors", router_recipient);
 
 export default app;

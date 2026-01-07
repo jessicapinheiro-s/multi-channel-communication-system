@@ -41,6 +41,7 @@ model Warning_logs_sent {
 
 model Recipient {
   id         Int      @id @default(autoincrement())
+  name       String?
   email      String
   phone      String?
   preferences String?
