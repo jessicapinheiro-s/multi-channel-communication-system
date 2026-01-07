@@ -5,6 +5,7 @@ import LoadingModal from "../components/modals/Loanding-modal"
 import MessageFormModal from "../components/modals/MessageFormModal"
 import { Toast } from "../components"
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
+import { getTotalEmails, getTotalMessages, getTotalWarnings } from "../repository"
 
 
 type ToastType = "success" | "error";
@@ -53,12 +54,6 @@ const menus_selecao = [
   "mensagens"
 ]
 export default function DashboardAdmin() {
-  // dados mockados (depois você pluga no backend)
-  const totalCampaigns = 12
-  const smsCampaigns = 7
-  const emailCampaigns = 5
-
-  const ambiente = import.meta.env.VITE_AMBIENTE_API;
   const [isLoanding, setIsLoading] = useState(false);
   const [campaign_info, setCampaignInfo] = useState({
     message: "",
@@ -68,6 +63,35 @@ export default function DashboardAdmin() {
   const [toastOpen, setToastOpen] = useState(false);
   const [selectedMenu, setSelectedMenu] = useState(menus_selecao[0]);
 
+  const {
+    data: totalCampaigns
+  } = useQuery({
+    queryKey: ['total_warnings'],
+    queryFn: async () => {
+      return await getTotalWarnings();
+    }
+  });
+
+  const {
+    data: smsCampaigns
+  } = useQuery({
+    queryKey: ['total_warnings_meessages'],
+    queryFn: async () => {
+      return await getTotalMessages();
+    }
+  });
+
+  const {
+    data: emailCampaigns
+  } = useQuery({
+    queryKey: ['total_warnings_email'],
+    queryFn: async () => {
+      return await getTotalEmails()
+    }
+  });
+
+  const ambiente = import.meta.env.VITE_AMBIENTE_API;
+
   const [toastInfo, setToastInfo] = useState<ToastProps>({
     duration: 3000,
     message: "",
@@ -75,7 +99,7 @@ export default function DashboardAdmin() {
     type: 'success'
   });
 
-  const fetchCampaigns = async (pageParam: number): Promise<Warning[]>  => {
+  const fetchCampaigns = async (pageParam: number): Promise<Warning[]> => {
     const response = await fetch(`${ambiente}/warnings_logs/get-all`);
     return response.json();
   }
