@@ -6,7 +6,7 @@ import LoadingModal from "../components/modals/Loanding-modal";
 interface RegisterDataProps {
     name?: string;
     email: string;
-    password: string;
+    password?: string;
     phone?: string;
 }
 export default function Register() {
@@ -17,13 +17,12 @@ export default function Register() {
         const obj_to_create = {
             name: data.name || '',
             email: data.email,
-            password: data.password,
             phone: data.phone || '',
-            user_preferences: ''
+            preferences: ''
         }
         try {
             setIsLoading(true);
-            const response = await fetch(`${ambiente}/auth/register`, {
+            const response = await fetch(`${ambiente}/recipients/create`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -45,10 +44,9 @@ export default function Register() {
     };
 
     return (
-        <main className="flex flex-col items-center justify-center">
+        <main className="min-h-screen flex flex-col items-center justify-center">
             <FormRegisterLogin handleSubmitFun={handleRegister} type="register" />
-            <LoadingModal open={isLoanding} message="Registering user..." />
-
+            <LoadingModal open={isLoanding} message="Criando usuário.." />
         </main>
     );
 }

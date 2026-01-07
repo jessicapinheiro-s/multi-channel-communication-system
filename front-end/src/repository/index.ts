@@ -12,7 +12,7 @@ export const getTotalWarnings = async () => {
 
 export const getTotalReceptors = async () => {
   try {
-    const response = await fetch(`${ambiente}/users/get-all`);
+    const response = await fetch(`${ambiente}/receptors/get-all`);
     const total = await response.json();
     return total.length;
   } catch (error) {

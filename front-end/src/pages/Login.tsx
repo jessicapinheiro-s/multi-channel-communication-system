@@ -1,21 +1,17 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import FormRegisterLogin from "../components/form-resgiter-login/Form-resgiter-login";
+import type { FormData } from "../components/form-resgiter-login/Form-resgiter-login";
 
 import { useUserStore } from "../../stores/user";
 import LoadingModal from "../components/modals/Loanding-modal";
-interface LoginDataProps {
-    email: string;
-    password: string;
-
-}
+interface LoginDataProps extends FormData {}
 export default function Login() {
     const navigate = useNavigate();
     const ambiente = import.meta.env.VITE_AMBIENTE_API;
     const [isLoanding, setIsLoading] = useState(false);
     const { setUser } = useUserStore();
     const handleLoggin = async (data: LoginDataProps) => {
-    
         const obj_to_login = {
             email: data.email,
             password: data.password
@@ -39,12 +35,7 @@ export default function Login() {
             if(user) {
                 setUser(user);
             }
-            if(user.role === 'admin') {
-                navigate('/dashboard-admin');
-
-            }else{
-                navigate('/dashboard-user');
-            }
+            navigate('/dashboard-admin');
             console.log('Login successful, user:', user);
 
 
@@ -56,13 +47,13 @@ export default function Login() {
         }
     }
     return (
-        <main className="flex flex-col items-center justify-center">
+        <main className="min-h-screen flex flex-col items-center justify-center">
             <FormRegisterLogin
                 handleSubmitFun={handleLoggin}
                 type="login"
             />
 
-            <LoadingModal open={isLoanding} message="Registering user..." />
+            <LoadingModal open={isLoanding} message="Logando.." />
 
         </main>
     )

@@ -6,14 +6,15 @@ import { Link } from "react-router-dom";
 
 interface PropsData {
     type: "register" | "login";
-    handleSubmitFun: (data: FormData) => void;
+    handleSubmitFun: (data: FormData) => Promise<any> | void;
 }
 
 export type FormData = {
     name?: string;
     email: string;
-    password: string;
+    password?: string;
     phone?: string;
+    preferences?: string;
 };
 
 const loginSchema = yup.object({
@@ -24,23 +25,26 @@ const loginSchema = yup.object({
 const registerSchema = yup.object({
     name: yup.string().min(2, "Name must be at least 2 characters").required("Name is required"),
     email: yup.string().email("Invalid email format").required("Email is required"),
-    password: yup.string().min(6, "Password must be at least 6 characters").required("Password is required"),
     phone: yup.string().required("Phone number is required"),
+    preferences: yup.string().optional(),
 });
 
 export default function FormRegisterLogin({ type, handleSubmitFun }: PropsData) {
+    const chosenResolver = type === "register" ? yupResolver(registerSchema) : yupResolver(loginSchema);
+
     const {
         control,
         register,
         handleSubmit,
         formState: { errors, isSubmitting },
     } = useForm<FormData>({
-        resolver: yupResolver(type === "register" ? registerSchema : loginSchema),
+        resolver: chosenResolver as any,
         defaultValues: {
             name: "",
             email: "",
             password: "",
             phone: "",
+            preferences: "",
         },
     });
 
@@ -49,77 +53,93 @@ export default function FormRegisterLogin({ type, handleSubmitFun }: PropsData) 
     };
 
     return (
-        <form
-            onSubmit={handleSubmit(onSubmit)}
-            className="bg-[#191A29] flex flex-col gap-6 w-full md:w-3/6 border p-5 text-white"
-        >
-            <div>
-                <h1 className="text-2xl font-semibold">{type === "login" ? "Welcome back!" : "Create your account"}</h1>
-            </div>
-
-            <div className="flex flex-col gap-4">
-                {type === "register" && (
-                    <>
-                        <input
-                            {...register("name")}
-                            className="border rounded-2xl bg-transparent px-2 py-1"
-                            type="text"
-                            placeholder="Name"
-                            aria-label="name"
-                        />
-                        {errors.name && <p className="text-sm text-red-400">{(errors.name as any).message}</p>}
-
-                        <Controller
-                            name="phone"
-                            control={control}
-                            render={({ field }) => (
-                                <IMaskInput
-                                    {...field}
-                                    className="border rounded-2xl bg-transparent px-2 py-1"
-                                    mask="+55 (00) 00000-0000"
-                                    placeholder="Phone Number"
-                                    onAccept={(value: any) => field.onChange(value)}
-                                />
-                            )}
-                        />
-                        {errors.phone && <p className="text-sm text-red-400">{(errors.phone as any).message}</p>}
-                    </>
-                )}
-
-                <input
-                    {...register("email")}
-                    className="border rounded-2xl bg-transparent px-2 py-1"
-                    type="email"
-                    placeholder="E-mail"
-                    aria-label="email"
-                />
-                {errors.email && <p className="text-sm text-red-400">{(errors.email as any).message}</p>}
-
-                <input
-                    {...register("password")}
-                    className="border rounded-2xl bg-transparent px-2 py-1"
-                    type="password"
-                    placeholder="Password"
-                    aria-label="password"
-                />
-                {errors.password && <p className="text-sm text-red-400">{(errors.password as any).message}</p>}
-
-                <div className="flex items-center justify-between gap-4">
-                    <button disabled={isSubmitting} type="submit" className="bg-slate-600 px-4 py-2 rounded">
-                        {type === "register" ? "Register" : "Login"}
-                    </button>
-
-                    {type === "login" ? (
-                        <Link to="/register" className="text-sm underline">
-                            Create account
-                        </Link>
-                    ) : (
-                        <Link to="/login" className="text-sm underline">
-                            Already have an account?
-                        </Link>
-                    )}
+            <form
+                onSubmit={handleSubmit(onSubmit)}
+                className="w-full max-w-md mx-auto bg-white rounded-2xl shadow-lg p-8 text-gray-900"
+            >
+                <div className="mb-6 text-center">
+                    <h1 className="text-2xl font-bold">{type === "login" ? "Welcome back" : "Create your account"}</h1>
+                    <p className="text-sm text-gray-500 mt-1">{type === "login" ? "Sign in to continue to the dashboard" : "Enter your details to receive messages"}</p>
                 </div>
-            </div>
-        </form>
+
+                <div className="flex flex-col gap-4">
+                    {type === "register" && (
+                        <>
+                            <label className="text-sm font-medium text-gray-700">Name</label>
+                            <input
+                                {...register("name")}
+                                className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                                type="text"
+                                placeholder="Your full name"
+                                aria-label="name"
+                            />
+                            {errors.name && <p className="text-sm text-red-500">{(errors.name as any).message}</p>}
+
+                            <label className="text-sm font-medium text-gray-700">Phone</label>
+                            <Controller
+                                name="phone"
+                                control={control}
+                                render={({ field }) => (
+                                    <IMaskInput
+                                        {...field}
+                                        className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                                        mask="+55 (00) 00000-0000"
+                                        placeholder="Phone Number"
+                                        onAccept={(value: any) => field.onChange(value)}
+                                    />
+                                )}
+                            />
+                            {errors.phone && <p className="text-sm text-red-500">{(errors.phone as any).message}</p>}
+
+                            <label className="text-sm font-medium text-gray-700">Preferences</label>
+                            <input
+                                {...register("preferences")}
+                                className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                                type="text"
+                                placeholder="sms,email"
+                                aria-label="preferences"
+                            />
+                        </>
+                    )}
+
+                    <label className="text-sm font-medium text-gray-700">Email</label>
+                    <input
+                        {...register("email")}
+                        className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                        type="email"
+                        placeholder="name@example.com"
+                        aria-label="email"
+                    />
+                    {errors.email && <p className="text-sm text-red-500">{(errors.email as any).message}</p>}
+
+                    {type === "login" && (
+                        <>
+                            <label className="text-sm font-medium text-gray-700">Password</label>
+                            <input
+                                {...register("password")}
+                                className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                                type="password"
+                                placeholder="Your password"
+                                aria-label="password"
+                            />
+                            {errors.password && <p className="text-sm text-red-500">{(errors.password as any).message}</p>}
+                        </>
+                    )}
+
+                    <div className="flex flex-col gap-3 mt-4">
+                        <button disabled={isSubmitting} type="submit" className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold py-2 rounded-lg shadow-md hover:opacity-95">
+                            {type === "register" ? "Create account" : "Sign in"}
+                        </button>
+
+                        <div className="text-center text-sm text-gray-500">
+                            {type === "login" ? (
+                                <Link to="/register" className="text-blue-600 underline">Create account</Link>
+                            ) : (
+                                <Link to="/login" className="text-blue-600 underline">Already have an account?</Link>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            </form>
     );
 }

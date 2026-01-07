@@ -4,8 +4,10 @@ import { Card } from "../components/card/Card-simple"
 import LoadingModal from "../components/modals/Loanding-modal"
 import MessageFormModal from "../components/modals/MessageFormModal"
 import { Toast } from "../components"
+import { Send } from 'lucide-react'
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
-import { getTotalEmails, getTotalMessages, getTotalWarnings } from "../repository"
+import { getTotalEmails, getTotalMessages, getTotalReceptors, getTotalWarnings } from "../repository"
+import { useUserStore } from "../../stores/user"
 
 
 type ToastType = "success" | "error";
@@ -41,7 +43,6 @@ export interface Warning {
   warning_logs_sent?: WarningLogSent[];
 }
 
-
 export interface ToastProps {
   type?: ToastType;
   title?: string;
@@ -52,9 +53,11 @@ export interface ToastProps {
 const menus_selecao = [
   "campanhas",
   "mensagens"
-]
+];
+
 export default function DashboardAdmin() {
   const [isLoanding, setIsLoading] = useState(false);
+  const {user} = useUserStore();
   const [campaign_info, setCampaignInfo] = useState({
     message: "",
     channel: "sms"
@@ -90,6 +93,15 @@ export default function DashboardAdmin() {
     }
   });
 
+  const {
+    data: totalReceptors
+  } = useQuery({
+    queryKey: ["receptors_registered"],
+    queryFn: async () => {
+      return await getTotalReceptors();
+    },
+  })
+
   const ambiente = import.meta.env.VITE_AMBIENTE_API;
 
   const [toastInfo, setToastInfo] = useState<ToastProps>({
@@ -119,7 +131,7 @@ export default function DashboardAdmin() {
     placeholderData: keepPreviousData,
   })
 
-  console.log(data_campaigns)
+
   const {
     data: data_messages,
   } = useQuery({
@@ -186,11 +198,101 @@ export default function DashboardAdmin() {
     }
   }
 
+  const createWarningLog = async (recipient: any, campaign_id: number, channel: string) => {
+    try {
+      const payload = {
+        user_id: recipient.id ?? recipient.user_id ?? null,
+        warningId: campaign_id,
+        channel,
+        sent_at: new Date().toISOString(),
+      };
+
+      const response = await fetch(`${ambiente}/warnings_logs/create`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        const text = await response.text();
+        console.error('Failed to create warning log:', text);
+        return null;
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('createWarningLog error:', error);
+      return null;
+    }
+  }
+
+  const handleSendMessages = async (campaign_id: number, channel: string) => {
+    try {
+      setIsLoading(true);
+      // backend exposes recipients at /recipients/get-all; filter by preferences on the client
+      const response = await fetch(`${ambiente}/recipients/get-all`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      });
+
+      if (!response.ok) {
+        <Toast
+          open={false}
+          duration={3000}
+          message=""
+          title=""
+        />
+        return;
+      }
+
+      const recipients = await response.json();
+
+      const filtered = (recipients || []).filter((r: any) => {
+        const prefs = r.preferences ?? r.warning_preferences ?? '';
+        if (!prefs) return false;
+        // preferences may be a comma separated string or single value
+        if (typeof prefs === 'string') return prefs.split(',').map((s:any)=>s.trim()).includes(channel);
+        if (Array.isArray(prefs)) return prefs.includes(channel);
+        return false;
+      });
+
+      if (filtered.length > 0) {
+        // send logs sequentially to avoid overwhelming the backend / external providers
+        for (const recipient of filtered) {
+          await createWarningLog(recipient, campaign_id, channel);
+        }
+
+        setToastInfo({
+          duration: 4000,
+          message: `Mensagens enfileiradas para ${filtered.length} receptor(es).`,
+          title: 'Envio iniciado',
+          type: 'success'
+        });
+        setToastOpen(true);
+      } else {
+        setToastInfo({
+          duration: 4000,
+          message: 'Nenhum receptor com essa preferência encontrado.',
+          title: 'Nenhum receptor',
+          type: 'error'
+        });
+        setToastOpen(true);
+      }
+
+    } catch (error) {
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   return (
-    <main className="min-h-screen bg-gray-100">
+    <main className="min-h-screen bg-gray-50">
       <Header
-        companyName="My Company"
-        userName="Admin"
+        companyName="NINE"
+        userName={(user?.name)?.charAt(0).toLocaleUpperCase().concat((user?.name)?.slice(1)) || 'User'}
         onLogout={() => { }}
       />
 
@@ -217,11 +319,14 @@ export default function DashboardAdmin() {
         </div>
 
         {/* Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <Card title="Total de campanhas">
-            <p className="text-4xl font-bold text-gray-900">
-              {totalCampaigns || 0}
-            </p>
+            <div className="flex items-center justify-between">
+              <p className="text-4xl font-bold text-gray-900">
+                {totalCampaigns || 0}
+              </p>
+
+            </div>
           </Card>
 
           <Card title="Campanhas por SMS">
@@ -233,6 +338,12 @@ export default function DashboardAdmin() {
           <Card title="Campanhas por Email">
             <p className="text-4xl font-bold text-indigo-600">
               {emailCampaigns || 0}
+            </p>
+          </Card>
+
+          <Card title="Total de Receptores">
+            <p className="text-4xl font-bold text-red-600">
+              {totalReceptors || 0}
             </p>
           </Card>
         </div>
@@ -259,15 +370,27 @@ export default function DashboardAdmin() {
 
 
         {/**Content */}
-        <div className="w-full">
+        <div className="w-full flex flex-col gap-6">
           {
             selectedMenu === 'campanhas' ? (
-              <div>
+              <div className="w-full flex flex-col gap-4">
                 {
                   data_campaigns?.map((campaigns: Warning) => (
                     <Card key={campaigns.id} title={""}>
-                      <p className="text-gray-600">Status: {campaigns.status.charAt(0).toLocaleUpperCase().concat(campaigns.status.slice(1))}</p>
-                      <p className="text-gray-600">Mensagem: {(campaigns.message).slice(0,20)}</p>
+                      <div className="flex flex-row items-center justify-between">
+                        <div>
+                          <p className="text-gray-600">Status: {campaigns.status.charAt(0).toLocaleUpperCase().concat(campaigns.status.slice(1))}</p>
+                          <p className="text-gray-600">Mensagem: {(campaigns.message).slice(0, 20)}</p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => handleSendMessages(campaigns.id, (campaigns as any).channel ?? 'sms')}
+                          className="ml-4 inline-flex items-center justify-center rounded-md bg-blue-600 hover:bg-blue-700 text-white p-2"
+                          aria-label="Iniciar campanha"
+                        >
+                          <Send className="w-5 h-5" />
+                        </button>
+                      </div>
                     </Card>
                   ))
                 }
@@ -277,9 +400,21 @@ export default function DashboardAdmin() {
                 {
                   data_messages?.map((message: WarningLogSent) => (
                     <Card key={message.id} title={""}>
-                      <p className="text-gray-600">{message.user?.name}</p>
-                      <p>{message.created_at}</p>
-                      <p>{message.channel}</p>
+                      <div className="flex flex-row items-center justify-between">
+                        <div>
+                          <p className="text-gray-600">{message.user?.name}</p>
+                          <p>{message.created_at}</p>
+                          <p>{message.channel}</p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setIsMessageModalOpen(true)}
+                          className="ml-4 inline-flex items-center justify-center rounded-md bg-blue-600 hover:bg-blue-700 text-white p-2"
+                          aria-label="Iniciar campanha"
+                        >
+                          <Send className="w-5 h-5" />
+                        </button>
+                      </div>
                     </Card>
                   ))
                 }
@@ -288,7 +423,9 @@ export default function DashboardAdmin() {
           }
         </div>
       </section>
+
       <LoadingModal open={isLoanding} message="Creating campaign..." />
+
       <MessageFormModal
         open={isMessageModalOpen}
         initialValue={campaign_info}
@@ -302,6 +439,7 @@ export default function DashboardAdmin() {
           handleIniciarCampanha({ message: value.message, channel: value.channel });
         }}
       />
+
       <Toast
         open={toastOpen}
         duration={toastInfo.duration}
