@@ -1,6 +1,6 @@
 import prisma from "../../config/prisma.js";
 
-export const f_create_warning = async ({ status, message }) => {
+export const f_create_warning = async ({ status, message, title }) => {
   if (!message) {
     throw new Error("Message is required to create a warning.");
   }
@@ -9,6 +9,7 @@ export const f_create_warning = async ({ status, message }) => {
       data: {
         status: status ? status : "pending",
         message: message,
+        name: title
       },
     });
     return response;

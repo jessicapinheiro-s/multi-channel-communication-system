@@ -22,6 +22,7 @@ model User {
 
 model Warnings {
   id                Int                 @id @default(autoincrement())
+  name              String              @default("")
   status            String
   message           String
   created_at        DateTime            @default(now())

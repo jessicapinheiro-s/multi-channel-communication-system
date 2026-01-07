@@ -7,14 +7,14 @@ import {
 } from "../../services/warnings/index.js";
 
 export const create_warning = async (req, res) => {
-  const { status, message } = req.body;
+  const { status, message, title } = req.body;
 
   if (!message) {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
   try {
-    const response = await f_create_warning({ status, message });
+    const response = await f_create_warning({ status, message, title });
     return res.status(201).json(response);
   } catch (error) {
     return res.status(500).json({ error: "Internal Server Error" });
