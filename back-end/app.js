@@ -6,6 +6,7 @@ import router_warning_sent_logs from "./src/routes/warning-sent-logs/index.js";
 import router_warning from "./src/routes/warnings/index.js";
 import auth_router from "./src/routes/auth/index.js";
 import router_recipient from "./src/routes/recipient/index.js";
+import send_by_email_router from "@/routes/send-by-email/index.js";
 
 
 dotenv.config();
@@ -23,5 +24,6 @@ app.use("/warnings", router_warning);
 app.use("/auth", auth_router);
 app.use("/recipients", router_recipient);
 app.use("/receptors", router_recipient);
+app.use('/emails', send_by_email_router)
 
 export default app;
