@@ -51,6 +51,17 @@ export interface ToastProps {
   duration?: number; // ms
 }
 
+export interface SendEmailPros {
+  to_email: string;
+  to_name: string;
+  subject: string;
+  message: string;
+  recipient_id: number;
+  from_email: string;
+  from_name: string;
+  warning_id: number;
+}
+
 const menus_selecao = [
   "campanhas",
   "mensagens"
@@ -58,7 +69,7 @@ const menus_selecao = [
 
 export default function DashboardAdmin() {
   const [isLoanding, setIsLoading] = useState(false);
-  const {user} = useUserStore();
+  const { user } = useUserStore();
   const [campaign_info, setCampaignInfo] = useState({
     message: "",
     channel: "sms",
@@ -202,6 +213,20 @@ export default function DashboardAdmin() {
     }
   }
 
+  const sendEmail = async (item_info: SendEmailPros) => {
+    try {
+      const response = fetch(`${ambiente}/emails/send/email`, {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(item_info)
+      })
+    } catch (error) {
+      console.error('Erro ao tentar enviar o email');
+    }
+  }
+
   const createWarningLog = async (recipient: any, campaign_id: number, channel: string) => {
     try {
       const payload = {
@@ -257,7 +282,7 @@ export default function DashboardAdmin() {
         const prefs = r.preferences ?? r.warning_preferences ?? '';
         if (!prefs) return false;
         // preferences may be a comma separated string or single value
-        if (typeof prefs === 'string') return prefs.split(',').map((s:any)=>s.trim()).includes(channel);
+        if (typeof prefs === 'string') return prefs.split(',').map((s: any) => s.trim()).includes(channel);
         if (Array.isArray(prefs)) return prefs.includes(channel);
         return false;
       });
@@ -265,7 +290,16 @@ export default function DashboardAdmin() {
       if (filtered.length > 0) {
         // send logs sequentially to avoid overwhelming the backend / external providers
         for (const recipient of filtered) {
-          await createWarningLog(recipient, campaign_id, channel);
+          await sendEmail({
+            to_email: recipient.email,
+            to_name: recipient.name,
+            from_email: "jessicasilva.js@gmail.com",
+            message: "",
+            from_name: "Sitema de Envio de Avisos",
+            recipient_id: recipient.id,
+            subject: "Teste",
+            warning_id: campaign_id
+          });
         }
 
         setToastInfo({
