@@ -59,3 +59,11 @@ export const logout = async (req, res) => {
     return res.status(401).json({ error: error.message });
   }
 };
+
+export const me = async(req, res) => {
+  try {
+    
+  }catch(error) {
+
+  }
+}
