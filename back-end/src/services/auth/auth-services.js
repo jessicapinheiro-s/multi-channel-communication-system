@@ -37,7 +37,7 @@ export const f_login_validate = async ({ email, password }) => {
   return token
     ? {
         token,
-        user
+        user,
       }
     : null;
 };
@@ -67,10 +67,31 @@ export const f_create_user_auth = async ({
       password: hashedPassword,
       phone: phone,
       role: "user",
-      warnings_preferences: user_preferences ?? 'email',
+      warnings_preferences: user_preferences ?? "email",
     },
   });
 
   return user_created;
 };
 
+export const f_get_current_user = async ({ id }) => {
+  if(!id){
+    throw new Error('Request param not found');
+  }
+
+  const user = await prisma.user.findUnique({
+    where: {
+      id: id
+    },
+    select: {
+      id: true,
+      email: true,
+      name: true,
+      role: true,
+      warnings_preferences: true,
+    }
+  })
+
+  return user;
+
+};

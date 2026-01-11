@@ -8,6 +8,7 @@ import { Send } from 'lucide-react'
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { getTotalEmails, getTotalMessages, getTotalReceptors, getTotalWarnings } from "../repository"
 import { useUserStore } from "../../stores/user"
+import { useNavigate } from "react-router"
 
 
 type ToastType = "success" | "error";
@@ -75,6 +76,7 @@ export default function DashboardAdmin() {
     channel: "sms",
     name: ""
   });
+  const navigate = useNavigate();
   const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
   const [toastOpen, setToastOpen] = useState(false);
   const [selectedMenu, setSelectedMenu] = useState(menus_selecao[0]);
@@ -326,12 +328,24 @@ export default function DashboardAdmin() {
     }
   }
 
+  const handleLogout = async () => {
+    try {
+      await fetch(`${ambiente}/auth/logout`, {
+        method: "POST",
+        credentials: "include",
+      });
+      navigate('/login');
+    }catch(error) {
+      console.error('Erro ao logout', error)
+    }
+  }
+
   return (
     <main className="min-h-screen bg-gray-50">
       <Header
         companyName="NINE"
         userName={(user?.name)?.charAt(0).toLocaleUpperCase().concat((user?.name)?.slice(1)) || 'User'}
-        onLogout={() => { }}
+        onLogout={handleLogout}
       />
 
       <section className="w-full flex flex-col gap-6 py-10 px-14">

@@ -20,6 +20,7 @@ export default function Login() {
             setIsLoading(true);
             const response = await fetch(`${ambiente}/auth/login`, {
                 method: 'POST',
+                credentials: "include",
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -36,8 +37,6 @@ export default function Login() {
                 setUser(user);
             }
             navigate('/dashboard-admin');
-            console.log('Login successful, user:', user);
-
 
         } catch (error) {
             console.error('Error during login:', error);

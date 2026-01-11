@@ -1,6 +1,5 @@
 import { create } from "zustand";
 const ambiente = import.meta.env.VITE_AMBIENTE_API;
-
 interface User {
   id: number;
   email: string;
@@ -30,6 +29,7 @@ export const useUserStore = create<UserState>((set) => ({
       });
 
       if (!response.ok) {
+        console.error(response.status)
         throw new Error("Erro ao buscar informações do usuário atual");
       }
 
@@ -37,6 +37,7 @@ export const useUserStore = create<UserState>((set) => ({
       set({ user });
     } catch (error) {
       set({user: null})
+      console.error(error);
       throw new Error("Erro ao buscar informações do usuário atual");
     } finally {
       set({ loanding: false });

@@ -24,18 +24,12 @@ export const auth = (req, res, next) => {
   }
 
   try {
-    const authHeader = req.headers.authorization;
-    if (!authHeader) {
+    const authToken = req.cookies?.token;
+    if (!authToken) {
       return res.status(401).json({ error: "Token não informado" });
     }
 
-    const [type, token] = authHeader.split(" ");
-
-    if (type !== "Bearer" || !token) {
-      return res.status(401).json({ error: "Token mal formatado" });
-    }
-
-    req.user = jwt.verify(token, secret);
+    req.user = jwt.verify(authToken, secret);
     next();
   } catch {
     return res.status(401).json({ error: "Token inválido ou expirado" });
