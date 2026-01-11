@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { Header } from "../components/header/Header"
 import { Card } from "../components/card/Card-simple"
 import LoadingModal from "../components/modals/Loanding-modal"
@@ -6,7 +6,7 @@ import MessageFormModal from "../components/modals/MessageFormModal"
 import { Toast } from "../components"
 import { Send } from 'lucide-react'
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
-import { getTotalEmails, getTotalMessages, getTotalReceptors, getTotalWarnings } from "../repository"
+import { getTotalEmails, getTotalMessages, getTotalReceptors, getTotalWarningLogs, getTotalWarnings } from "../repository"
 import { useUserStore } from "../../stores/user"
 import { useNavigate } from "react-router"
 
@@ -68,6 +68,12 @@ const menus_selecao = [
   "mensagens"
 ];
 
+const status_campaigns = [
+  "todos",
+  "criado",
+  "enviado"
+]
+
 export default function DashboardAdmin() {
   const [isLoanding, setIsLoading] = useState(false);
   const { user } = useUserStore();
@@ -80,6 +86,48 @@ export default function DashboardAdmin() {
   const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
   const [toastOpen, setToastOpen] = useState(false);
   const [selectedMenu, setSelectedMenu] = useState(menus_selecao[0]);
+  const [status, setFilterStatus] = useState<string>('todos');
+  const [ordenacao, setOrdenacao] = useState<string>('descendente');
+
+  const fetchCampaigns = async (pageParam: number): Promise<Warning[]> => {
+    const response = await fetch(`${ambiente}/warnings/get-all`, {
+      method: "GET",
+      credentials: "include"
+    });
+    return response.json();
+  }
+  const fetchMessages = async (pageParam: number): Promise<WarningLogSent[]> => {
+    const response = await fetch(`${ambiente}/warnings_logs/get-all`, {
+      method: "GET",
+      credentials: "include"
+    });
+    return response.json();
+  }
+
+  const {
+    data: data_campaigns,
+  } = useQuery({
+    queryKey: ['data', 'campanhas'],
+    queryFn: async () => {
+      return await fetchCampaigns(3)
+    },
+    retry: 2,
+    enabled: selectedMenu === 'campanhas',
+    placeholderData: keepPreviousData,
+  })
+
+
+  const {
+    data: data_messages,
+  } = useQuery({
+    queryKey: ['data', 'mensagens'],
+    queryFn: async () => {
+      return await fetchMessages(3)
+    },
+    retry: 2,
+    enabled: selectedMenu === 'mensagens',
+    placeholderData: keepPreviousData,
+  })
 
   const {
     data: totalCampaigns
@@ -126,38 +174,6 @@ export default function DashboardAdmin() {
     type: 'success'
   });
 
-  const fetchCampaigns = async (pageParam: number): Promise<Warning[]> => {
-    const response = await fetch(`${ambiente}/warnings/get-all`);
-    return response.json();
-  }
-  const fetchMessages = async (pageParam: number): Promise<WarningLogSent[]> => {
-    const response = await fetch(`${ambiente}/warnings_logs/get-all`);
-    return response.json();
-  }
-  const {
-    data: data_campaigns,
-  } = useQuery({
-    queryKey: ['data', 'campanhas'],
-    queryFn: async () => {
-      return await fetchCampaigns(3)
-    },
-    retry: 2,
-    enabled: selectedMenu === 'campanhas',
-    placeholderData: keepPreviousData,
-  })
-
-
-  const {
-    data: data_messages,
-  } = useQuery({
-    queryKey: ['data', 'mensagens'],
-    queryFn: async () => {
-      return await fetchMessages(3)
-    },
-    retry: 2,
-    enabled: selectedMenu === 'mensagens',
-    placeholderData: keepPreviousData,
-  })
 
 
   const handleIniciarCampanha = async (campaign?: { message: string; channel: string; name?: string; title?: string }) => {
@@ -262,10 +278,8 @@ export default function DashboardAdmin() {
       setIsLoading(true);
       // backend exposes recipients at /recipients/get-all; filter by preferences on the client
       const response = await fetch(`${ambiente}/recipients/get-all`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        method: "GET",
+        credentials: "include"
       });
 
       if (!response.ok) {
@@ -335,10 +349,60 @@ export default function DashboardAdmin() {
         credentials: "include",
       });
       navigate('/login');
-    }catch(error) {
+    } catch (error) {
       console.error('Erro ao logout', error)
     }
   }
+
+
+  const campaigns = useMemo(() => {
+    let data = data_campaigns ? [...data_campaigns] : [];
+
+    // filtro por status
+    if (status === 'criado') {
+      data = data.filter(item => item.status === 'created');
+    } else if (status === 'enviado') {
+      data = data.filter(item => item.status === 'enviado');
+    }
+
+    // ordenação por data
+    if (ordenacao === 'ascendente') {
+      data = data.sort(
+        (a, b) =>
+          new Date(a.created_at).getTime() -
+          new Date(b.created_at).getTime()
+      );
+    } else if (ordenacao === 'descendente') {
+      data = data.sort(
+        (a, b) =>
+          new Date(b.created_at).getTime() -
+          new Date(a.created_at).getTime()
+      );
+    }
+    return data;
+  }, [data_campaigns, status, ordenacao]);
+
+
+  const messages = useMemo(() => {
+    let data = data_messages ? [...data_messages] : [];
+
+    // ordenação por data
+    if (ordenacao === 'ascendente') {
+      data = data.sort(
+        (a, b) =>
+          new Date(a.created_at).getTime() -
+          new Date(b.created_at).getTime()
+      );
+    } else if (ordenacao === 'descendente') {
+      data = data.sort(
+        (a, b) =>
+          new Date(b.created_at).getTime() -
+          new Date(a.created_at).getTime()
+      );
+    }
+    return data;
+  }, [data_messages, ordenacao]);
+
 
   return (
     <main className="min-h-screen bg-gray-50">
@@ -420,6 +484,47 @@ export default function DashboardAdmin() {
           </div>
         </div>
 
+        {/*Filter*/}
+        <div className="w-full">
+          <div className="w-full flex flex-row gap-6 items-center justify-end">
+            <div>
+              <select
+                name="status"
+                id="status"
+                title="Status da Campanha"
+                value={status}
+                onChange={(e) => setFilterStatus(e.target.value)}
+                className="w-full border border-gray-300 rounded px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                {
+                  status_campaigns?.map((campaign) => (
+                    <option value={campaign}>{campaign.charAt(0).toLocaleUpperCase().concat(campaign.slice(1))}</option>
+                  ))
+                }
+
+              </select>
+            </div>
+            <div>
+              <select
+                name="ordenacao"
+                id="ordenacao"
+                title="Ordenar Por"
+                value={ordenacao}
+                onChange={(e) => setOrdenacao(e.target.value)}
+                className="w-full border border-gray-300 rounded px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                {
+                  ["Descendente", "Ascendente"]?.map((ord) => (
+                    <option value={ord}>{ord.charAt(0).toLocaleUpperCase().concat(ord.slice(1))}</option>
+                  ))
+                }
+
+              </select>
+            </div>
+
+          </div>
+        </div>
+
 
         {/**Content */}
         <div className="w-full flex flex-col gap-6">
@@ -427,12 +532,12 @@ export default function DashboardAdmin() {
             selectedMenu === 'campanhas' ? (
               <div className="w-full flex flex-col gap-4">
                 {
-                  data_campaigns?.map((campaigns: Warning) => (
+                  (campaigns ?? [])?.map((campaigns: Warning) => (
                     <Card key={campaigns.id} title={""}>
                       <div className="flex flex-row items-center justify-between">
                         <div>
                           <p className="text-gray-600">Nome: {campaigns?.name?.charAt(0).toLocaleUpperCase().concat(campaigns.name.slice(1))}</p>
-                          <p>Status: {campaigns.status}</p>
+                          <p>Status: {campaigns.status.charAt(0).toLocaleUpperCase().concat(campaigns.status.slice(1))}</p>
                           <p>Criado em: {campaigns?.created_at ? new Date(campaigns.created_at).toLocaleDateString('pt-br') : ''}</p>
                           <p className="text-gray-600">Mensagem: {(campaigns.message).slice(0, 100)}</p>
                         </div>
@@ -452,7 +557,7 @@ export default function DashboardAdmin() {
             ) : (
               <div>
                 {
-                  data_messages?.map((message: WarningLogSent) => (
+                  messages?.map((message: WarningLogSent) => (
                     <Card key={message.id} title={""}>
                       <div className="flex flex-row items-center justify-between">
                         <div>

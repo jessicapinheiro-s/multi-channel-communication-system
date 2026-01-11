@@ -8,7 +8,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { getTotalEmails, getTotalMessages, getTotalReceptors, getTotalWarningLogs, getTotalWarnings } from './repository'
 
 const queryClient = new QueryClient();
-/*
+
 queryClient.prefetchQuery({
   queryKey: ["receptors_registered"],
   queryFn: async () => {
@@ -43,7 +43,7 @@ queryClient.prefetchQuery({
   queryFn: async () => {
     return await getTotalWarningLogs();
   },
-});*/
+});
 
 
 

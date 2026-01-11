@@ -2,7 +2,10 @@ const ambiente = import.meta.env.VITE_AMBIENTE_API;
 
 export const getTotalWarnings = async () => {
   try {
-    const response = await fetch(`${ambiente}/warnings/get-all`);
+    const response = await fetch(`${ambiente}/warnings/get-all`,{
+      method: "GET",
+      credentials: "include"
+    });
     const total = await response.json();
     return total.length;
   } catch (error) {
@@ -12,7 +15,10 @@ export const getTotalWarnings = async () => {
 
 export const getTotalReceptors = async () => {
   try {
-    const response = await fetch(`${ambiente}/receptors/get-all`);
+    const response = await fetch(`${ambiente}/receptors/get-all`,{
+      method: "GET",
+      credentials: "include"
+    });
     const total = await response.json();
     return total.length;
   } catch (error) {
@@ -22,7 +28,10 @@ export const getTotalReceptors = async () => {
 
 export const getTotalMessages = async () => {
   try {
-    const response = await fetch(`${ambiente}/warnings_logs/get-all`);
+    const response = await fetch(`${ambiente}/warnings_logs/get-all`,{
+      method: "GET",
+      credentials: "include"
+    });
     const total = await response.json();
     return total.length;
   } catch (error) {
@@ -32,7 +41,10 @@ export const getTotalMessages = async () => {
 
 export const getTotalWarningLogs = async () => {
   try {
-    const response = await fetch(`${ambiente}/warnings_logs/get-all`);
+    const response = await fetch(`${ambiente}/warnings_logs/get-all`,{
+      method: "GET",
+      credentials: "include"
+    });
     const total = await response.json();
     return total.length;
   } catch (error) {
@@ -42,7 +54,10 @@ export const getTotalWarningLogs = async () => {
 
 export const getTotalEmails = async () => {
   try {
-    const response = await fetch(`${ambiente}/warnings_logs/get-all`);
+    const response = await fetch(`${ambiente}/warnings_logs/get-all`,{
+      method: "GET",
+      credentials: "include"
+    });
     const total = await response.json();
     return total.length;
   } catch (error) {
