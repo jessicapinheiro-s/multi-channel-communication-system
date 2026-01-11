@@ -7,12 +7,15 @@ import {
 } from "../../controllers/warnings/index.js";
 import { Router } from "express";
 import auth from "../auth/index.js";
+import { validate } from "@/middlewares/validate.js";
+import { createWarningSentLogSchema } from "@/schemas/warning-log-schema.js";
+import { createWarningSchema, deleteWarningSchema, getByIdWarningSchema, updateWarningSchema } from "@/schemas/warning-schema.js";
 const router_warning = Router();
 
-router_warning.post("/create", auth, create_warning);
-router_warning.patch("/update", auth, update_warning);
-router_warning.delete("/delete", auth, delete_warning);
-router_warning.get("/get-by-id", auth, get_by_id_warning);
+router_warning.post("/create", auth, validate(createWarningSchema), create_warning);
+router_warning.patch("/update", auth, validate(updateWarningSchema), update_warning);
+router_warning.delete("/delete", auth, validate(deleteWarningSchema), delete_warning);
+router_warning.get("/get-by-id", auth,validate(getByIdWarningSchema), get_by_id_warning);
 router_warning.get('/get-all', auth, get_all_warnings);
 
 export default router_warning;

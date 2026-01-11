@@ -8,20 +8,6 @@ export const createUserSchema = z.object({
   user_preferences: z.array(z.string()).optional(),
 });
 
-export const createWarningSchema = z.object({
-    title: z.string(),
-    message: z.string()
-});
-
-export const createWarningSentLogSchema = z.object({
-    user_id: z.number(),
-    warningId: z.number(),
-    channel: z.string(),
-    sent_at: z.date()
-});
-
-export const loginSchema = z.object({});
-
 export const updateUserSchema = z.object({
   id: z.number(),
   item_data: {
@@ -31,16 +17,4 @@ export const updateUserSchema = z.object({
     phone: z.string().optional(),
     user_preferences: z.array(z.string()).optional(),
   },
-});
-
-export const deleteSchema = z.object({
-    id: z.number()
-});
-
-export const getByEmail = z.object({
-    email:  z.string().email("Email inválido")
-});
-
-export const getById = z.object({
-    id: z.number()
 });
