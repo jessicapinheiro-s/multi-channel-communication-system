@@ -6,7 +6,7 @@ import MessageFormModal from "../components/modals/MessageFormModal"
 import { Toast } from "../components"
 import { Send } from 'lucide-react'
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
-import { getTotalEmails, getTotalMessages, getTotalReceptors, getTotalWarningLogs, getTotalWarnings } from "../repository"
+import { fetchCampaigns, fetchMessages, fetchReceptors, getTotalEmails, getTotalMessages, getTotalReceptors, getTotalWarningLogs, getTotalWarnings } from "../repository"
 import { useUserStore } from "../../stores/user"
 import { useNavigate } from "react-router"
 
@@ -44,6 +44,13 @@ export interface Warning {
   created_at: string; // ou Date, dependendo do fetch
   warning_logs_sent?: WarningLogSent[];
 }
+export interface Receptor {
+  id: number;
+  name: string;
+  email: string;
+  phone: string;
+  preferences: string;
+}
 
 export interface ToastProps {
   type?: ToastType;
@@ -65,7 +72,8 @@ export interface SendEmailPros {
 
 const menus_selecao = [
   "campanhas",
-  "mensagens"
+  "mensagens",
+  "receptores"
 ];
 
 const status_campaigns = [
@@ -89,21 +97,6 @@ export default function DashboardAdmin() {
   const [status, setFilterStatus] = useState<string>('todos');
   const [ordenacao, setOrdenacao] = useState<string>('descendente');
 
-  const fetchCampaigns = async (pageParam: number): Promise<Warning[]> => {
-    const response = await fetch(`${ambiente}/warnings/get-all`, {
-      method: "GET",
-      credentials: "include"
-    });
-    return response.json();
-  }
-  const fetchMessages = async (pageParam: number): Promise<WarningLogSent[]> => {
-    const response = await fetch(`${ambiente}/warnings_logs/get-all`, {
-      method: "GET",
-      credentials: "include"
-    });
-    return response.json();
-  }
-
   const {
     data: data_campaigns,
   } = useQuery({
@@ -113,6 +106,18 @@ export default function DashboardAdmin() {
     },
     retry: 2,
     enabled: selectedMenu === 'campanhas',
+    placeholderData: keepPreviousData,
+  })
+
+  const {
+    data: data_receptors,
+  } = useQuery({
+    queryKey: ['data', 'receptores'],
+    queryFn: async () => {
+      return await fetchReceptors(3)
+    },
+    retry: 2,
+    enabled: selectedMenu === 'receptores',
     placeholderData: keepPreviousData,
   })
 
@@ -354,7 +359,6 @@ export default function DashboardAdmin() {
     }
   }
 
-
   const campaigns = useMemo(() => {
     let data = data_campaigns ? [...data_campaigns] : [];
 
@@ -403,7 +407,9 @@ export default function DashboardAdmin() {
     return data;
   }, [data_messages, ordenacao]);
 
-
+  const receptors = useMemo(() => {
+    return data_receptors;
+  }, [data_receptors]);
   return (
     <main className="min-h-screen bg-gray-50">
       <Header
@@ -560,7 +566,7 @@ export default function DashboardAdmin() {
                   )
                 }
               </div>
-            ) : (
+            ) : selectedMenu === "mensagens" ? (
               <div>
                 {
                   messages.length > 0 ? (
@@ -590,6 +596,38 @@ export default function DashboardAdmin() {
                   ) : (
                     <div className="w-full h-full flex flex-col items-center justify-center">
                       <h2 className="text-[20px] font-bold">There is no messages sent</h2>
+                    </div>
+                  )
+                }
+              </div>
+            ) : (
+              <div>
+                {
+                  (receptors || [])?.length > 0 ? (
+                    <div className="w-full grid grid-cols-2 gap-6">
+                      {
+                        receptors?.map((message: Receptor) => (
+                          <Card key={message.id} title={""}>
+                            <div className="flex flex-row items-center justify-between">
+                              <div>
+                                <p className="text-gray-600">Name: {message.name}</p>
+                                <p>Telefone: {message.phone}</p>
+                                <p>E-mail: {message.email}</p>
+                              </div>
+                              <div>
+                                <p
+                                  className="ml-4 inline-flex items-center justify-center rounded-md bg-blue-600 hover:bg-blue-700 text-white p-2"
+                                >{message.preferences}</p>
+                              </div>
+                             
+                            </div>
+                          </Card>
+                        ))
+                      }
+                    </div>
+                  ) : (
+                    <div className="w-full h-full flex flex-col items-center justify-center">
+                      <h2 className="text-[20px] font-bold">There is no receptors registered</h2>
                     </div>
                   )
                 }
