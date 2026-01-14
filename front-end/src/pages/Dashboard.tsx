@@ -281,7 +281,6 @@ export default function DashboardAdmin() {
   const handleSendMessages = async (campaign_id: number, channel: string) => {
     try {
       setIsLoading(true);
-      // backend exposes recipients at /recipients/get-all; filter by preferences on the client
       const response = await fetch(`${ambiente}/recipients/get-all`, {
         method: "GET",
         credentials: "include"
