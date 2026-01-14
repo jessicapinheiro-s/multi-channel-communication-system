@@ -8,6 +8,7 @@ interface RegisterDataProps {
     email: string;
     password?: string;
     phone?: string;
+    preferences?: string;
 }
 export default function Register() {
     const navigate = useNavigate();
@@ -18,7 +19,7 @@ export default function Register() {
             name: data.name || '',
             email: data.email,
             phone: data.phone || '',
-            preferences: ''
+            preferences: data.preferences || ''
         }
         try {
             setIsLoading(true);

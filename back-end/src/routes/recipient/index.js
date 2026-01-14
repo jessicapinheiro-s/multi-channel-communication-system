@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { create, get_all } from '../../controllers/recipient/index.js';
-import { validate } from '@/middlewares/validate.js';
-import { createRecipientSchema } from '@/schemas/recipient-schema.js';
+import { validate } from '../../middlewares/validate.js';
+import { createRecipientSchema } from '../../schemas/recipient-schema.js';
 
 const recipient_router = Router();
 

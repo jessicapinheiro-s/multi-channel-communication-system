@@ -7,9 +7,9 @@ import {
 } from "../../controllers/warnings/index.js";
 import { Router } from "express";
 import auth from "../auth/index.js";
-import { validate } from "@/middlewares/validate.js";
-import { createWarningSentLogSchema } from "@/schemas/warning-log-schema.js";
-import { createWarningSchema, deleteWarningSchema, getByIdWarningSchema, updateWarningSchema } from "@/schemas/warning-schema.js";
+import { validate } from "../../middlewares/validate.js";
+import { createWarningSentLogSchema } from "../../schemas/warning-log-schema.js";
+import { createWarningSchema, deleteWarningSchema, getByIdWarningSchema, updateWarningSchema } from "../../schemas/warning-schema.js";
 const router_warning = Router();
 
 router_warning.post("/create", auth, validate(createWarningSchema), create_warning);

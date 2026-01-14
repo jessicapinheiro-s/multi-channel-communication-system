@@ -49,6 +49,15 @@ export default function FormRegisterLogin({ type, handleSubmitFun }: PropsData) 
     });
 
     const onSubmit = async (data: FormData) => {
+        if(type === "register" && (!data.email || !data.name || !data.phone || !data.preferences)) {
+            console.error("Há propriedades vazias", data);
+            return;
+        }
+
+        if(type === "login" && (!data.email || !data.password)) {
+            console.error("Há propriedades vazias", data);
+            return;
+        }
         await handleSubmitFun(data);
     };
 
@@ -58,7 +67,7 @@ export default function FormRegisterLogin({ type, handleSubmitFun }: PropsData) 
                 className="w-full max-w-md mx-auto bg-white rounded-2xl shadow-lg p-8 text-gray-900"
             >
                 <div className="mb-6 text-center">
-                    <h1 className="text-2xl font-bold">{type === "login" ? "Welcome back" : "Create your account"}</h1>
+                    <h1 className="text-2xl font-bold text-gray-700">{type === "login" ? "Welcome back" : "Create your account"}</h1>
                     <p className="text-sm text-gray-500 mt-1">{type === "login" ? "Sign in to continue to the dashboard" : "Enter your details to receive messages"}</p>
                 </div>
 

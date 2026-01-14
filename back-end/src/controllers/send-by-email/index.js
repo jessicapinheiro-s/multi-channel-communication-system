@@ -1,4 +1,4 @@
-import { f_send_by_email } from "@/services/send-by-email";
+import { f_send_by_email } from "../../services/send-by-email";
 
 export const send_email = async (req, res) => {
   try {
