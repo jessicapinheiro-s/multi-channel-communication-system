@@ -180,7 +180,6 @@ export default function DashboardAdmin() {
   });
 
 
-
   const handleIniciarCampanha = async (campaign?: { message: string; channel: string; name?: string; title?: string }) => {
     const campaignToSend = campaign ?? campaign_info;
     const objt_warning_to_create = {
@@ -237,9 +236,16 @@ export default function DashboardAdmin() {
   }
 
   const sendEmail = async (item_info: SendEmailPros) => {
+    console.log(item_info)
+    if (!item_info.from_email || !item_info.from_name || !item_info.message || !item_info.recipient_id || !item_info.subject || !item_info.to_email || !item_info.to_name || !item_info.warning_id) {
+      console.error('Há alguma informação faltando', item_info);
+      return;
+    }
+
     try {
-      const response = fetch(`${ambiente}/emails/send/email`, {
+      const response = fetch(`${ambiente}/emails/send`, {
         method: 'POST',
+        credentials: "include",
         headers: {
           "Content-Type": "application/json"
         },
@@ -278,7 +284,7 @@ export default function DashboardAdmin() {
     }
   }
 
-  const handleSendMessages = async (campaign_id: number, channel: string) => {
+  const handleSendMessages = async (campaign_id: number, channel: string, message: string) => {
     try {
       setIsLoading(true);
       const response = await fetch(`${ambiente}/recipients/get-all`, {
@@ -314,7 +320,7 @@ export default function DashboardAdmin() {
             to_email: recipient.email,
             to_name: recipient.name,
             from_email: "jessicasilva.js@gmail.com",
-            message: "",
+            message: message,
             from_name: "Sitema de Envio de Avisos",
             recipient_id: recipient.id,
             subject: "Teste",
@@ -552,7 +558,7 @@ export default function DashboardAdmin() {
                           </div>
                           <button
                             type="button"
-                            onClick={() => handleSendMessages(campaigns.id, (campaigns as any).channel ?? 'sms')}
+                            onClick={() => handleSendMessages(campaigns.id, (campaigns as any).channel ?? 'sms', campaigns.message)}
                             className="ml-4 inline-flex items-center justify-center rounded-md bg-blue-600 hover:bg-blue-700 text-white p-2"
                             aria-label="Iniciar campanha"
                           >
