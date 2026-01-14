@@ -1,8 +1,8 @@
 import z from "zod";
 
 export const createWarningSchema = z.object({
-  title: z.string().min(3),
-  message: z.string().min(5),
+  title: z.string().min(6),
+  message: z.string().min(10),
   channel: z.enum(["sms", "email"]),
   status: z.enum(["created", "sent"])
 });
@@ -10,8 +10,8 @@ export const createWarningSchema = z.object({
 export const updateWarningSchema = z.object({
   id: z.number(),
   itemInfo: {
-    title: z.string().min(3),
-    message: z.string().min(5),
+    title: z.string().min(6),
+    message: z.string().min(10),
     channel: z.enum(["sms", "email"]),
     status: z.enum(["created", "sent"])
   },

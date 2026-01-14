@@ -5,6 +5,11 @@ import { f_get_all_recipients } from '../../services/recipient/index.js';
 export const create = async (req, res) => {
   const { name, email, phone, preferences } = req.body;
   try {
+    console.log({
+      controller: {
+         name, email, phone, preferences 
+      }
+    })
     const response = await f_create_recipient({ name, email, phone, preferences });
     res.status(201).json(response);
   } catch (error) {
