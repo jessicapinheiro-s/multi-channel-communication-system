@@ -498,7 +498,7 @@ export default function DashboardAdmin() {
               >
                 {
                   status_campaigns?.map((campaign) => (
-                    <option value={campaign}>{campaign.charAt(0).toLocaleUpperCase().concat(campaign.slice(1))}</option>
+                    <option key={campaign} value={campaign}>{campaign.charAt(0).toLocaleUpperCase().concat(campaign.slice(1))}</option>
                   ))
                 }
 
@@ -515,7 +515,7 @@ export default function DashboardAdmin() {
               >
                 {
                   ["Descendente", "Ascendente"]?.map((ord) => (
-                    <option value={ord}>{ord.charAt(0).toLocaleUpperCase().concat(ord.slice(1))}</option>
+                    <option value={ord} key={ord}>{ord.charAt(0).toLocaleUpperCase().concat(ord.slice(1))}</option>
                   ))
                 }
 
@@ -532,50 +532,66 @@ export default function DashboardAdmin() {
             selectedMenu === 'campanhas' ? (
               <div className="w-full flex flex-col gap-4">
                 {
-                  (campaigns ?? [])?.map((campaigns: Warning) => (
-                    <Card key={campaigns.id} title={""}>
-                      <div className="flex flex-row items-center justify-between">
-                        <div>
-                          <p className="text-gray-600">Nome: {campaigns?.name?.charAt(0).toLocaleUpperCase().concat(campaigns.name.slice(1))}</p>
-                          <p>Status: {campaigns.status.charAt(0).toLocaleUpperCase().concat(campaigns.status.slice(1))}</p>
-                          <p>Criado em: {campaigns?.created_at ? new Date(campaigns.created_at).toLocaleDateString('pt-br') : ''}</p>
-                          <p className="text-gray-600">Mensagem: {(campaigns.message).slice(0, 100)}</p>
+                  campaigns.length > 0 ? (
+                    (campaigns)?.map((campaigns: Warning) => (
+                      <Card key={campaigns.id} title={""}>
+                        <div className="flex flex-row items-center justify-between">
+                          <div>
+                            <p className="text-gray-600">Nome: {campaigns?.name?.charAt(0).toLocaleUpperCase().concat(campaigns.name.slice(1))}</p>
+                            <p>Status: {campaigns.status.charAt(0).toLocaleUpperCase().concat(campaigns.status.slice(1))}</p>
+                            <p>Criado em: {campaigns?.created_at ? new Date(campaigns.created_at).toLocaleDateString('pt-br') : ''}</p>
+                            <p className="text-gray-600">Mensagem: {(campaigns.message).slice(0, 100)}</p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => handleSendMessages(campaigns.id, (campaigns as any).channel ?? 'sms')}
+                            className="ml-4 inline-flex items-center justify-center rounded-md bg-blue-600 hover:bg-blue-700 text-white p-2"
+                            aria-label="Iniciar campanha"
+                          >
+                            <Send className="w-5 h-5" />
+                          </button>
                         </div>
-                        <button
-                          type="button"
-                          onClick={() => handleSendMessages(campaigns.id, (campaigns as any).channel ?? 'sms')}
-                          className="ml-4 inline-flex items-center justify-center rounded-md bg-blue-600 hover:bg-blue-700 text-white p-2"
-                          aria-label="Iniciar campanha"
-                        >
-                          <Send className="w-5 h-5" />
-                        </button>
-                      </div>
-                    </Card>
-                  ))
+                      </Card>
+                    ))
+                  ) : (
+                    <div className="w-full h-full flex flex-col items-center justify-center">
+                      <h1 className="text-[20px] font-bold text-gray-950">There is no campaigns registered</h1>
+                    </div>
+                  )
                 }
               </div>
             ) : (
               <div>
                 {
-                  messages?.map((message: WarningLogSent) => (
-                    <Card key={message.id} title={""}>
-                      <div className="flex flex-row items-center justify-between">
-                        <div>
-                          <p className="text-gray-600">{message.user?.name}</p>
-                          <p>{message.created_at}</p>
-                          <p>{message.channel}</p>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => setIsMessageModalOpen(true)}
-                          className="ml-4 inline-flex items-center justify-center rounded-md bg-blue-600 hover:bg-blue-700 text-white p-2"
-                          aria-label="Iniciar campanha"
-                        >
-                          <Send className="w-5 h-5" />
-                        </button>
-                      </div>
-                    </Card>
-                  ))
+                  messages.length > 0 ? (
+                    <div className="w-full flex flex-col gap-4">
+                      {
+                        messages?.map((message: WarningLogSent) => (
+                          <Card key={message.id} title={""}>
+                            <div className="flex flex-row items-center justify-between">
+                              <div>
+                                <p className="text-gray-600">{message.user?.name}</p>
+                                <p>{message.created_at}</p>
+                                <p>{message.channel}</p>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => setIsMessageModalOpen(true)}
+                                className="ml-4 inline-flex items-center justify-center rounded-md bg-blue-600 hover:bg-blue-700 text-white p-2"
+                                aria-label="Iniciar campanha"
+                              >
+                                <Send className="w-5 h-5" />
+                              </button>
+                            </div>
+                          </Card>
+                        ))
+                      }
+                    </div>
+                  ) : (
+                    <div className="w-full h-full flex flex-col items-center justify-center">
+                      <h2 className="text-[20px] font-bold">There is no messages sent</h2>
+                    </div>
+                  )
                 }
               </div>
             )
