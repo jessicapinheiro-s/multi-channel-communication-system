@@ -8,15 +8,14 @@ import {
 
 export const create_warning = async (req, res) => {
   // Accept either `title` or `name` from the client. Older clients may send `name`.
-  const { status, message } = req.body;
-  const title = req.body.title ?? req.body.name ?? '';
+  const { status, message, title, channel } = req.body;
 
   if (!message) {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
   try {
-    const response = await f_create_warning({ status, message, title });
+    const response = await f_create_warning({ status, message, title, channel });
     return res.status(201).json(response);
   } catch (error) {
     return res.status(500).json({ error: "Internal Server Error" });

@@ -41,6 +41,7 @@ export interface Warning {
   status: string;
   message: string;
   name: string;
+  channel: string;
   created_at: string; // ou Date, dependendo do fetch
   warning_logs_sent?: WarningLogSent[];
 }
@@ -304,14 +305,10 @@ export default function DashboardAdmin() {
 
       const recipients = await response.json();
 
-      const filtered = (recipients || []).filter((r: any) => {
-        const prefs = r.preferences ?? r.warning_preferences ?? '';
-        if (!prefs) return false;
-        // preferences may be a comma separated string or single value
-        if (typeof prefs === 'string') return prefs.split(',').map((s: any) => s.trim()).includes(channel);
-        if (Array.isArray(prefs)) return prefs.includes(channel);
-        return false;
-      });
+      const filtered = recipients.filter((r: Receptor) => r.preferences === channel);
+
+      console.log(filtered, channel);
+      return;
 
       if (filtered.length > 0) {
         // send logs sequentially to avoid overwhelming the backend / external providers
@@ -554,11 +551,12 @@ export default function DashboardAdmin() {
                             <p className="text-gray-600">Nome: {campaigns?.name?.charAt(0).toLocaleUpperCase().concat(campaigns.name.slice(1))}</p>
                             <p>Status: {campaigns.status.charAt(0).toLocaleUpperCase().concat(campaigns.status.slice(1))}</p>
                             <p>Criado em: {campaigns?.created_at ? new Date(campaigns.created_at).toLocaleDateString('pt-br') : ''}</p>
+                            <p>Canal: {campaigns?.channel}</p>
                             <p className="text-gray-600">Mensagem: {(campaigns.message).slice(0, 100)}</p>
                           </div>
                           <button
                             type="button"
-                            onClick={() => handleSendMessages(campaigns.id, (campaigns as any).channel ?? 'sms', campaigns.message)}
+                            onClick={() => handleSendMessages(campaigns.id, (campaigns as any).campaigns.channel ?? '', campaigns.message)}
                             className="ml-4 inline-flex items-center justify-center rounded-md bg-blue-600 hover:bg-blue-700 text-white p-2"
                             aria-label="Iniciar campanha"
                           >

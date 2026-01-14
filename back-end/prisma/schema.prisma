@@ -25,6 +25,7 @@ model Warnings {
   name              String              @default("")
   status            String
   message           String
+  channel           String              @default("")
   created_at        DateTime            @default(now())
   warning_logs_sent Warning_logs_sent[]
 }
