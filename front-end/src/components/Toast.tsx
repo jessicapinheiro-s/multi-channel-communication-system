@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { Check, X } from "lucide-react";
 
 type ToastType = "success" | "error";
 
@@ -16,9 +17,10 @@ export default function Toast({
   type = "success",
   title,
   message,
-  duration = 4000,
+  duration = 500,
   onClose,
 }: ToastProps) {
+
   useEffect(() => {
     if (!open) return;
     const t = setTimeout(() => onClose && onClose(), duration);
@@ -28,7 +30,7 @@ export default function Toast({
   if (!open) return null;
 
   const isSuccess = type === "success";
-  const bg = isSuccess ? "bg-green-50" : "bg-red-50"; // pastel background
+  const bg = isSuccess ? "bg-green-50" : "bg-red-50";
   const border = isSuccess ? "border-green-200" : "border-red-200";
   const text = isSuccess ? "text-green-800" : "text-red-800";
 
@@ -41,16 +43,14 @@ export default function Toast({
       >
         <div className="flex-shrink-0">
           <div
-            className={`w-8 h-8 rounded-full flex items-center justify-center ${isSuccess ? "bg-green-100" : "bg-red-100"}`}
+            className={`w-8 h-8 rounded-full flex items-center justify-center ${
+              isSuccess ? "bg-green-100" : "bg-red-100"
+            }`}
           >
             {isSuccess ? (
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
+              <Check className="h-5 w-5 text-green-600" strokeWidth={2.5} />
             ) : (
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              <X className="h-5 w-5 text-red-600" strokeWidth={2.5} />
             )}
           </div>
         </div>
@@ -63,11 +63,14 @@ export default function Toast({
         <button
           onClick={() => onClose && onClose()}
           aria-label="Fechar alerta"
-          className="ml-2 text-sm opacity-70 hover:opacity-100"
+          className="ml-2 opacity-70 hover:opacity-100"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" className={`h-5 w-5 ${isSuccess ? "text-green-700" : "text-red-700"}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
+          <X
+            className={`h-5 w-5 ${
+              isSuccess ? "text-green-700" : "text-red-700"
+            }`}
+            strokeWidth={2.5}
+          />
         </button>
       </div>
     </div>

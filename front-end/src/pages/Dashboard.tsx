@@ -168,7 +168,7 @@ export default function DashboardAdmin() {
   const ambiente = import.meta.env.VITE_AMBIENTE_API;
 
   const [toastInfo, setToastInfo] = useState<ToastProps>({
-    duration: 3000,
+    duration: 1000,
     message: "",
     title: "",
     type: 'success'
@@ -197,7 +197,7 @@ export default function DashboardAdmin() {
 
       if (!response.ok) {
         setToastInfo({
-          duration: 5000,
+          duration: 1000,
           message: "Erro ao iniciar campanha. Tente novamente mais tarde.",
           title: "Erro",
           type: "error"
@@ -206,7 +206,7 @@ export default function DashboardAdmin() {
         return;
       } else {
         setToastInfo({
-          duration: 5000,
+          duration: 1000,
           message: "Sucesso ao iniciar campanha",
           title: "Sucesso",
           type: "success"
@@ -219,7 +219,7 @@ export default function DashboardAdmin() {
     } catch (error) {
       console.error("Erro ao iniciar campanha:", error);
       setToastInfo({
-        duration: 5000,
+        duration: 1000,
         message: "Erro ao iniciar campanha. Tente novamente mais tarde.",
         title: "Erro",
         type: "error"
@@ -285,7 +285,7 @@ export default function DashboardAdmin() {
       if (!response.ok) {
         <Toast
           open={false}
-          duration={3000}
+          duration={1000}
           message=""
           title=""
         />
@@ -319,7 +319,7 @@ export default function DashboardAdmin() {
         }
 
         setToastInfo({
-          duration: 4000,
+          duration: 1000,
           message: `Mensagens enfileiradas para ${filtered.length} receptor(es).`,
           title: 'Envio iniciado',
           type: 'success'
@@ -327,7 +327,7 @@ export default function DashboardAdmin() {
         setToastOpen(true);
       } else {
         setToastInfo({
-          duration: 4000,
+          duration: 1000,
           message: 'Nenhum receptor com essa preferência encontrado.',
           title: 'Nenhum receptor',
           type: 'error'
@@ -621,6 +621,7 @@ export default function DashboardAdmin() {
         message={toastInfo.message}
         title={toastInfo.title}
         type={toastInfo.type}
+        onClose={() => setToastOpen(false)}
       />
     </main>
   )
