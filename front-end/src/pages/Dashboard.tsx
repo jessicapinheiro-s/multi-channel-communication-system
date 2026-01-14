@@ -491,46 +491,49 @@ export default function DashboardAdmin() {
         </div>
 
         {/*Filter*/}
-        <div className="w-full">
-          <div className="w-full flex flex-row gap-6 items-center justify-end">
-            <div>
-              <select
-                name="status"
-                id="status"
-                title="Status da Campanha"
-                value={status}
-                onChange={(e) => setFilterStatus(e.target.value)}
-                className="w-full border border-gray-300 rounded px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                {
-                  status_campaigns?.map((campaign) => (
-                    <option key={campaign} value={campaign}>{campaign.charAt(0).toLocaleUpperCase().concat(campaign.slice(1))}</option>
-                  ))
-                }
+        {
+          selectedMenu !== "receptores" && (
+            <div className="w-full">
+              <div className="w-full flex flex-row gap-6 items-center justify-end">
+                <div>
+                  <select
+                    name="status"
+                    id="status"
+                    title="Status da Campanha"
+                    value={status}
+                    onChange={(e) => setFilterStatus(e.target.value)}
+                    className="w-full border border-gray-300 rounded px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    {
+                      status_campaigns?.map((campaign) => (
+                        <option key={campaign} value={campaign}>{campaign.charAt(0).toLocaleUpperCase().concat(campaign.slice(1))}</option>
+                      ))
+                    }
 
-              </select>
+                  </select>
+                </div>
+                <div>
+                  <select
+                    name="ordenacao"
+                    id="ordenacao"
+                    title="Ordenar Por"
+                    value={ordenacao}
+                    onChange={(e) => setOrdenacao(e.target.value)}
+                    className="w-full border border-gray-300 rounded px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    {
+                      ["Descendente", "Ascendente"]?.map((ord) => (
+                        <option value={ord} key={ord}>{ord.charAt(0).toLocaleUpperCase().concat(ord.slice(1))}</option>
+                      ))
+                    }
+
+                  </select>
+                </div>
+
+              </div>
             </div>
-            <div>
-              <select
-                name="ordenacao"
-                id="ordenacao"
-                title="Ordenar Por"
-                value={ordenacao}
-                onChange={(e) => setOrdenacao(e.target.value)}
-                className="w-full border border-gray-300 rounded px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                {
-                  ["Descendente", "Ascendente"]?.map((ord) => (
-                    <option value={ord} key={ord}>{ord.charAt(0).toLocaleUpperCase().concat(ord.slice(1))}</option>
-                  ))
-                }
-
-              </select>
-            </div>
-
-          </div>
-        </div>
-
+          )
+        }
 
         {/**Content */}
         <div className="w-full flex flex-col gap-6">
@@ -619,7 +622,7 @@ export default function DashboardAdmin() {
                                   className="ml-4 inline-flex items-center justify-center rounded-md bg-blue-600 hover:bg-blue-700 text-white p-2"
                                 >{message.preferences}</p>
                               </div>
-                             
+
                             </div>
                           </Card>
                         ))
