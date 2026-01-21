@@ -1,6 +1,9 @@
+import prisma from "@/config/prisma";
+
 const BREVO_URL = process.env.BREVO_URL;
 const BREVO_API_KEY = process.env.BREVO_API_KEY;
 const ambiente = process.env.DATABASE_URL;
+
 export const f_send_by_email = async (data) => {
   const {
     to_email,
@@ -26,6 +29,18 @@ export const f_send_by_email = async (data) => {
     throw new Error("Algum dado obrigatório está faltando estão faltando");
   }
 
+  const template = await prisma.templates_email.findFirst({
+    where: {
+      name: 'Aviso Padrão Principal'
+    },
+  });
+
+  if(!template) {
+    throw new Error('Email template not found');
+  }
+
+  const template_content = (template.body).toString().replace('{{nome}}', to_name).replace('{{titulo}}', '').replace('{{texto}}', message).toString();
+  
   try {
     const body_to_send = {
       sender: {
@@ -39,7 +54,7 @@ export const f_send_by_email = async (data) => {
         },
       ],
       subject: subject,
-      htmlContent: message,
+      htmlContent: template_content,
     };
 
     const response = await fetch(`${BREVO_URL}/email`, {
@@ -56,29 +71,6 @@ export const f_send_by_email = async (data) => {
       throw new Error(`Erro ao tentar enviar o e-mail, ${response.status}`);
     }
 
-    //criar warning_log
-
-    const response_warning_log = await fetch(
-      `${ambiente}/warnings_logs/create`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          user_id: recipient_id,
-          warningId: warning_id,
-          channel: "email",
-          // send ISO string; controller/service can parse to Date if needed
-          sent_at: new Date().toISOString(),
-        }),
-      }
-    );
-
-    if (!response_warning_log.ok) {
-      const text = await response_warning_log.text();
-      console.error("Failed to create warning log:", text);
-      throw new Error(`Falha ao crear wanrning log, ${response.status}`);
-    }
+    
   } catch (error) {}
 };
