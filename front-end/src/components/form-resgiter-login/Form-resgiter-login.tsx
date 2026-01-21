@@ -49,12 +49,12 @@ export default function FormRegisterLogin({ type, handleSubmitFun }: PropsData) 
     });
 
     const onSubmit = async (data: FormData) => {
-        if(type === "register" && (!data.email || !data.name || !data.phone || !data.preferences)) {
+        if (type === "register" && (!data.email || !data.name || !data.phone || !data.preferences)) {
             console.error("Há propriedades vazias", data);
             return;
         }
 
-        if(type === "login" && (!data.email || !data.password)) {
+        if (type === "login" && (!data.email || !data.password)) {
             console.error("Há propriedades vazias", data);
             return;
         }
@@ -62,93 +62,94 @@ export default function FormRegisterLogin({ type, handleSubmitFun }: PropsData) 
     };
 
     return (
-            <form
-                onSubmit={handleSubmit(onSubmit)}
-                className="w-full max-w-md mx-auto bg-white rounded-2xl shadow-lg p-8 text-gray-900"
-            >
-                <div className="mb-6 text-center">
-                    <h1 className="text-2xl font-bold text-gray-700">{type === "login" ? "Welcome back" : "Create your account"}</h1>
-                    <p className="text-sm text-gray-500 mt-1">{type === "login" ? "Sign in to continue to the dashboard" : "Enter your details to receive messages"}</p>
-                </div>
+        <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="w-full max-w-md mx-auto bg-white rounded-2xl shadow-lg p-8 text-gray-900"
+        >
+            <div className="mb-6 text-center">
+                <h1 className="text-2xl font-bold text-gray-700">{type === "login" ? "Welcome back" : "Create your account"}</h1>
+                <p className="text-sm text-gray-500 mt-1">{type === "login" ? "Sign in to continue to the dashboard" : "Enter your details to receive messages"}</p>
+            </div>
 
-                <div className="flex flex-col gap-4">
-                    {type === "register" && (
-                        <>
-                            <label className="text-sm font-medium text-gray-700">Name</label>
-                            <input
-                                {...register("name")}
-                                className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                                type="text"
-                                placeholder="Your full name"
-                                aria-label="name"
-                            />
-                            {errors.name && <p className="text-sm text-red-500">{(errors.name as any).message}</p>}
+            <div className="flex flex-col gap-4">
+                {type === "register" && (
+                    <>
+                        <label className="text-sm font-medium text-gray-700">Name</label>
+                        <input
+                            {...register("name")}
+                            className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                            type="text"
+                            placeholder="Your full name"
+                            aria-label="name"
+                        />
+                        {errors.name && <p className="text-sm text-red-500">{(errors.name as any).message}</p>}
 
-                            <label className="text-sm font-medium text-gray-700">Phone</label>
-                            <Controller
-                                name="phone"
-                                control={control}
-                                render={({ field }) => (
-                                    <IMaskInput
-                                        {...field}
-                                        className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                                        mask="+55 (00) 00000-0000"
-                                        placeholder="Phone Number"
-                                        onAccept={(value: any) => field.onChange(value)}
-                                    />
-                                )}
-                            />
-                            {errors.phone && <p className="text-sm text-red-500">{(errors.phone as any).message}</p>}
-
-                            <label className="text-sm font-medium text-gray-700">Preferences</label>
-                            <input
-                                {...register("preferences")}
-                                className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                                type="text"
-                                placeholder="sms,email"
-                                aria-label="preferences"
-                            />
-                        </>
-                    )}
-
-                    <label className="text-sm font-medium text-gray-700">Email</label>
-                    <input
-                        {...register("email")}
-                        className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                        type="email"
-                        placeholder="name@example.com"
-                        aria-label="email"
-                    />
-                    {errors.email && <p className="text-sm text-red-500">{(errors.email as any).message}</p>}
-
-                    {type === "login" && (
-                        <>
-                            <label className="text-sm font-medium text-gray-700">Password</label>
-                            <input
-                                {...register("password")}
-                                className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                                type="password"
-                                placeholder="Your password"
-                                aria-label="password"
-                            />
-                            {errors.password && <p className="text-sm text-red-500">{(errors.password as any).message}</p>}
-                        </>
-                    )}
-
-                    <div className="flex flex-col gap-3 mt-4">
-                        <button disabled={isSubmitting} type="submit" className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold py-2 rounded-lg shadow-md hover:opacity-95">
-                            {type === "register" ? "Create account" : "Sign in"}
-                        </button>
-
-                        <div className="text-center text-sm text-gray-500">
-                            {type === "login" ? (
-                                <Link to="/register" className="text-blue-600 underline">Create account</Link>
-                            ) : (
-                                <Link to="/login" className="text-blue-600 underline">Already have an account?</Link>
+                        <label className="text-sm font-medium text-gray-700">Phone</label>
+                        <Controller
+                            name="phone"
+                            control={control}
+                            render={({ field }) => (
+                                <IMaskInput
+                                    {...field}
+                                    className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                                    mask="+55 (00) 00000-0000"
+                                    placeholder="Phone Number"
+                                    onAccept={(value: any) => field.onChange(value)}
+                                />
                             )}
-                        </div>
+                        />
+                        {errors.phone && <p className="text-sm text-red-500">{(errors.phone as any).message}</p>}
+
+                        <label className="text-sm font-medium text-gray-700">Preferences</label>
+                        <input
+                            {...register("preferences")}
+                            className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                            type="text"
+                            placeholder="sms,email"
+                            aria-label="preferences"
+                        />
+                    </>
+                )}
+
+                <label className="text-sm font-medium text-gray-700">Email</label>
+                <input
+                    {...register("email")}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                    type="email"
+                    placeholder="name@example.com"
+                    aria-label="email"
+                />
+                {errors.email && <p className="text-sm text-red-500">{(errors.email as any).message}</p>}
+
+                {type === "login" && (
+                    <>
+                        <label className="text-sm font-medium text-gray-700">Password</label>
+                        <input
+                            {...register("password")}
+                            className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                            type="password"
+                            placeholder="Your password"
+                            aria-label="password"
+                        />
+                        {errors.password && <p className="text-sm text-red-500">{(errors.password as any).message}</p>}
+                    </>
+                )}
+
+                <div className="flex flex-col gap-3 mt-4">
+                    <button disabled={isSubmitting} type="submit" className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold py-2 rounded-lg shadow-md hover:opacity-95">
+                        {type === "register" ? "Create account" : "Sign in"}
+                    </button>
+
+                    <div className="text-center text-sm text-gray-500">
+                        {
+                            type === "login" && (
+                                <Link to="/register" className="text-blue-600 underline">Not an administrator? Sign up to receive notifications.</Link>
+                            ) 
+                        }
+
                     </div>
                 </div>
-            </form>
+            </div>
+        </form>
     );
 }
