@@ -1,4 +1,4 @@
-import prisma from "@/config/prisma";
+import prisma from "../../config/prisma";
 
 const BREVO_URL = process.env.BREVO_URL;
 const BREVO_API_KEY = process.env.BREVO_API_KEY;

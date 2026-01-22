@@ -1,4 +1,4 @@
-import { normalizeName } from "@/utils/normalize";
+import { normalizeName } from "../utils/normalize";
 import z from "zod";
 
 export const sendEmailSchema = z.object({
