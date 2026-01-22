@@ -1,8 +1,7 @@
-import prisma from "../../config/prisma";
+import prisma from "../../config/prisma.js";
 
 const BREVO_URL = process.env.BREVO_URL;
 const BREVO_API_KEY = process.env.BREVO_API_KEY;
-const ambiente = process.env.DATABASE_URL;
 
 export const f_send_by_email = async (data) => {
   const {
@@ -67,10 +66,8 @@ export const f_send_by_email = async (data) => {
       body: JSON.stringify(body_to_send),
     });
 
-    if (!response.ok) {
-      throw new Error(`Erro ao tentar enviar o e-mail, ${response.status}`);
-    }
-
-    
-  } catch (error) {}
+    return response;
+  } catch (error) {
+    throw new Error(`Erro ao tentar enviar o e-mail, ${error.message}`);
+  }
 };

@@ -137,7 +137,7 @@ export default function FormRegisterLogin({ type, handleSubmitFun }: PropsData) 
 
                 <div className="flex flex-col gap-3 mt-4">
                     <button disabled={isSubmitting} type="submit" className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold py-2 rounded-lg shadow-md hover:opacity-95">
-                        {type === "register" ? "Create account" : "Sign in"}
+                        {type === "register" ? "Register" : "Sign in"}
                     </button>
 
                     <div className="text-center text-sm text-gray-500">
