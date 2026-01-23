@@ -244,20 +244,22 @@ export default function DashboardAdmin() {
     }
 
     try {
-      const response = fetch(`${ambiente}/emails/send`, {
+      const response = fetch(`${ambiente}/emails/create`, {
         method: 'POST',
         credentials: "include",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify(item_info)
-      })
+      });
+
+      console.log(response)
     } catch (error) {
       console.error('Erro ao tentar enviar o email');
     }
   }
 
-  const createWarningLog = async (recipient: any, campaign_id: number, channel: string) => {
+  /*const createWarningLog = async (recipient: any, campaign_id: number, channel: string) => {
     try {
       const payload = {
         user_id: recipient.id ?? recipient.user_id ?? null,
@@ -283,9 +285,10 @@ export default function DashboardAdmin() {
       console.error('createWarningLog error:', error);
       return null;
     }
-  }
+  }*/
 
   const handleSendMessages = async (campaign_id: number, channel: string, message: string) => {
+    console.log('handleSendMessages', campaign_id, channel, message)
     try {
       setIsLoading(true);
       const response = await fetch(`${ambiente}/recipients/get-all`, {
@@ -307,8 +310,6 @@ export default function DashboardAdmin() {
 
       const filtered = recipients.filter((r: Receptor) => r.preferences === channel);
 
-      console.log(filtered, channel);
-      return;
 
       if (filtered.length > 0) {
         // send logs sequentially to avoid overwhelming the backend / external providers
@@ -316,7 +317,7 @@ export default function DashboardAdmin() {
           await sendEmail({
             to_email: recipient.email,
             to_name: recipient.name,
-            from_email: "jessicasilva.js@gmail.com",
+            from_email: "jessicasilva.js1314@gmail.com",
             message: message,
             from_name: "Sitema de Envio de Avisos",
             recipient_id: recipient.id,
@@ -413,7 +414,7 @@ export default function DashboardAdmin() {
     return data_receptors;
   }, [data_receptors]);
   return (
-    <main className="min-h-screen bg-gray-50">
+    <main className="min-h-screen bg-white-50">
       <Header
         companyName="NINE"
         userName={(user?.name)?.charAt(0).toLocaleUpperCase().concat((user?.name)?.slice(1)) || 'User'}
@@ -556,7 +557,7 @@ export default function DashboardAdmin() {
                           </div>
                           <button
                             type="button"
-                            onClick={() => handleSendMessages(campaigns.id, (campaigns as any).campaigns.channel ?? '', campaigns.message)}
+                            onClick={() => handleSendMessages(campaigns.id, campaigns.channel, campaigns.message)}
                             className="ml-4 inline-flex items-center justify-center rounded-md bg-blue-600 hover:bg-blue-700 text-white p-2"
                             aria-label="Iniciar campanha"
                           >

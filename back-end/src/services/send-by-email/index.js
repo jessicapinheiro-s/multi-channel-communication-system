@@ -30,16 +30,21 @@ export const f_send_by_email = async (data) => {
 
   const template = await prisma.templates_email.findFirst({
     where: {
-      name: 'Aviso Padrão Principal'
+      name: "Aviso Padrão Principal",
     },
   });
 
-  if(!template) {
-    throw new Error('Email template not found');
+  if (!template) {
+    throw new Error("Email template not found");
   }
 
-  const template_content = (template.body).toString().replace('{{nome}}', to_name).replace('{{titulo}}', '').replace('{{texto}}', message).toString();
-  
+  const template_content = template.body
+    .toString()
+    .replace("{{nome}}", to_name)
+    .replace("{{titulo}}", "")
+    .replace("{{texto}}", message)
+    .toString();
+
   try {
     const body_to_send = {
       sender: {
@@ -65,6 +70,12 @@ export const f_send_by_email = async (data) => {
       },
       body: JSON.stringify(body_to_send),
     });
+
+    if (!response.ok) {
+      throw new Error(
+        `Erro Brevo (${response.status}): ${response.statusText || "Falha ao enviar email"}`,
+      );
+    }
 
     return response;
   } catch (error) {
