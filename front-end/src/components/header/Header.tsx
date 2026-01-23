@@ -1,22 +1,71 @@
-import { LogOut } from "lucide-react"
-
+import { LogOut, MessageCircle, User, Volleyball } from "lucide-react"
+import { Megaphone } from 'lucide-react'
 type HeaderProps = {
   companyName: string
-  userName: string
   onLogout: () => void
 }
 
-export function Header({ companyName, userName, onLogout }: HeaderProps) {
+export function Header({ companyName, onLogout }: HeaderProps) {
+  const menus_selecao = [
+    "campanhas",
+    "mensagens",
+    "receptores"
+  ] as const;
+  const dictionaty = {
+    "campanhas": "Campaigns",
+    "mensagens": "Messages",
+    "receptores": "Receptors"
+  }
+
+  /**fixed md:static
+  inset-y-0 left-0
+  z-50
+  w-64
+  */
+
   return (
-    <header className="w-full h-16 py-10 px-14 flex items-center justify-between bg-white shadow-md">
-      {/* Empresa */}
-      <div className="text-lg font-bold tracking-wide">
-        {companyName}
+    <aside className="
+    fixed md:static
+      h-screen w-64
+      flex flex-col justify-between
+      bg-gray-50 
+      px-6 py-10
+      rounded-br-xl
+      rounded-tr-xl
+      transform
+      transition-transform
+      -translate-x-full md:translate-x-0 
+      z-50
+    ">
+      {/* Topo */}
+      <div className="space-y-10">
+        {/* Empresa */}
+        <div className="flex flex-row items-center gap-3  font-bold tracking-wide text-gray-600 py-3 px-4 bg-white  rounded-xl">
+          <span>
+            <Volleyball size={30} color={'#4FD1C5'} />
+          </span>
+          <span className="text-xl ">
+            {companyName}
+          </span>
+        </div>
       </div>
 
-      {/* Usuário */}
-      <div className="text-sm text-gray-300">
-        Olá, <span className="font-semibold text-gray-600">{userName}</span>
+      <div>
+        <nav>
+          <ul className="space-y-4">
+            {menus_selecao.map((menu) => (
+              <li
+                key={menu}
+                onClick={() => { }}
+                className="flex flex-row items-center gap-2 py-3 px-4 hover:bg-white focus:bg-white rounded-xl text-sm text-gray-600 ">
+                <span className="p-2 bg-[#4FD1C5] rounded-lg">{menu === 'campanhas' ? <Megaphone size={18} color="#fff" /> : menu === 'mensagens' ? <MessageCircle size={18} color="#fff" /> : <User size={18} color="#fff" />}</span>
+                <span>
+                  {dictionaty[menu]}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </nav>
       </div>
 
       {/* Logout */}
@@ -25,14 +74,17 @@ export function Header({ companyName, userName, onLogout }: HeaderProps) {
         title="logout"
         onClick={onLogout}
         className="
-          px-4 py-2 rounded
-          text-sm font-semibold
+          flex items-center gap-2
+          text-sm
           transition-colors
-          hover:last:bg-gray-200
+          py-3 px-4 hover:bg-white focus:bg-white rounded-xl
         "
       >
-        <LogOut size={20} />
+        <span className="p-2 bg-[#4FD1C5] rounded-lg text-gray-600">
+          <LogOut size={18} color="#fff" />
+        </span>
+        Log out
       </button>
-    </header>
+    </aside>
   )
 }

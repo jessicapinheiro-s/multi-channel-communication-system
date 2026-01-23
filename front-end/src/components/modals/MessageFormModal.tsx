@@ -73,7 +73,7 @@ export default function MessageFormModal({
             title="Canal de Envio"
             value={value.channel}
             onChange={(e) => setValue({ ...value, channel: e.target.value })}
-            className="w-full border border-gray-300 rounded px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="sms">SMS</option>
             <option value="email">Email</option>
@@ -85,7 +85,7 @@ export default function MessageFormModal({
             type="text"
             value={value.name}
             onChange={(e) => setValue({ ...value, name: e.target.value })}
-            className="w-full border border-gray-300 rounded px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Digite o nome da campanha"
           />
           <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -95,7 +95,7 @@ export default function MessageFormModal({
             ref={inputRef}
             value={value.message}
             onChange={(e) => setValue({ ...value, message: e.target.value })}
-            className="w-full border border-gray-300 rounded px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Digite a mensagem da campanha"
           />
 
@@ -103,14 +103,14 @@ export default function MessageFormModal({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded bg-gray-100 hover:bg-gray-200"
+              className="px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200"
             >
               Cancelar
             </button>
 
             <button
               type="submit"
-              className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
+              className="px-4 py-2 rounded-lg bg-[#4FD1C5] text-white hover:bg-[#4fd1c4c2]"
             >
               {submitLabel}
             </button>

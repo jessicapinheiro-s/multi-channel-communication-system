@@ -4,78 +4,31 @@ import { Card } from "../components/card/Card-simple"
 import LoadingModal from "../components/modals/Loanding-modal"
 import MessageFormModal from "../components/modals/MessageFormModal"
 import { Toast } from "../components"
-import { Send } from 'lucide-react'
+import { Mail, Megaphone, Send, Smartphone, User } from 'lucide-react'
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
-import { fetchCampaigns, fetchMessages, fetchReceptors, getTotalEmails, getTotalMessages, getTotalReceptors, getTotalWarningLogs, getTotalWarnings } from "../repository"
-import { useUserStore } from "../../stores/user"
+import { fetchCampaigns, fetchMessages, fetchReceptors, getTotalEmails, getTotalMessages, getTotalReceptors, getTotalWarnings } from "../repository"
 import { useNavigate } from "react-router"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../components/ui/table"
+import type { Receptor, SendEmailPros, ToastProps, Warning, WarningLogSent } from "../types/global-types"
 
-
-type ToastType = "success" | "error";
-
-export interface User {
-  id: number;
-  email: string;
-  name?: string | null;
-  created_at: string;   // ISO string no front
-  updated_at: string;   // ISO string
-  phone?: string | null;
-  warnings_preferences: string;
-  role: 'user' | 'admin' | string;
-  warning_logs_sent?: WarningLogSent[];
-}
-
-export interface WarningLogSent {
-  id: number;
-  warningId: number;
-  user_id: number;
-  sent_at: string;     // ou Date
-  channel: string;
-  created_at: string; // ou Date
-  user?: User;
-  warning?: Warning;
-}
-
-export interface Warning {
-  id: number;
-  status: string;
-  message: string;
-  name: string;
-  channel: string;
-  created_at: string; // ou Date, dependendo do fetch
-  warning_logs_sent?: WarningLogSent[];
-}
-export interface Receptor {
-  id: number;
-  name: string;
-  email: string;
-  phone: string;
-  preferences: string;
-}
-
-export interface ToastProps {
-  type?: ToastType;
-  title?: string;
-  message?: string;
-  duration?: number; // ms
-}
-
-export interface SendEmailPros {
-  to_email: string;
-  to_name: string;
-  subject: string;
-  message: string;
-  recipient_id: number;
-  from_email: string;
-  from_name: string;
-  warning_id: number;
-}
 
 const menus_selecao = [
   "campanhas",
   "mensagens",
   "receptores"
-];
+] as const;
+const dictionaty = {
+  "campanhas": "Campaigns",
+  "mensagens": "Messages",
+  "receptores": "Receptors"
+};
 
 const status_campaigns = [
   "todos",
@@ -85,7 +38,6 @@ const status_campaigns = [
 
 export default function DashboardAdmin() {
   const [isLoanding, setIsLoading] = useState(false);
-  const { user } = useUserStore();
   const [campaign_info, setCampaignInfo] = useState({
     message: "",
     channel: "sms",
@@ -94,7 +46,7 @@ export default function DashboardAdmin() {
   const navigate = useNavigate();
   const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
   const [toastOpen, setToastOpen] = useState(false);
-  const [selectedMenu, setSelectedMenu] = useState(menus_selecao[0]);
+  const [selectedMenu, setSelectedMenu] = useState<string>(menus_selecao[0]);
   const [status, setFilterStatus] = useState<string>('todos');
   const [ordenacao, setOrdenacao] = useState<string>('descendente');
 
@@ -414,38 +366,42 @@ export default function DashboardAdmin() {
     return data_receptors;
   }, [data_receptors]);
   return (
-    <main className="min-h-screen bg-white-50">
+    <main className="flex flex-row min-h-screen bg-gray-50">
       <Header
         companyName="NINE"
-        userName={(user?.name)?.charAt(0).toLocaleUpperCase().concat((user?.name)?.slice(1)) || 'User'}
         onLogout={handleLogout}
       />
 
-      <section className="w-full flex flex-col gap-6 py-10 px-14">
+      <section className="w-full flex flex-col gap-6 py-10 px-10">
         {/* Cabeçalho da página */}
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-gray-800">
-            Dashboard de Campanhas
-          </h1>
+        <div className="flex flex-col md:flex-row items-start justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-800">
+              Campaigns Dashboard
+            </h1>
+            <p className="text-sm text-gray-500">
+              Overview and management of your campaigns
+            </p>
+          </div>
 
           <>
             <button
               className="
-              bg-blue-600 hover:bg-blue-700
+              bg-[#4FD1C5] hover:bg-[#4fd1c4c2]
               text-white font-semibold
-              px-5 py-2 rounded
+              px-5 py-2 rounded-lg
               transition-colors
             "
               onClick={() => setIsMessageModalOpen(true)}
             >
-              Iniciar campanha
+              Create a Campaign
             </button>
           </>
         </div>
 
         {/* Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <Card title="Total de campanhas">
+          <Card title="Total Campaigns" iconHeader={Megaphone} iconColor="bg-gray-100 text-gray-900">
             <div className="flex items-center justify-between">
               <p className="text-4xl font-bold text-gray-900">
                 {totalCampaigns || 0}
@@ -454,19 +410,19 @@ export default function DashboardAdmin() {
             </div>
           </Card>
 
-          <Card title="Campanhas por SMS">
+          <Card title="SMS Campaigns" iconHeader={Smartphone} iconColor="bg-green-100 text-green-600">
             <p className="text-4xl font-bold text-green-600">
               {smsCampaigns || 0}
             </p>
           </Card>
 
-          <Card title="Campanhas por Email">
+          <Card title="Email Campaigns" iconHeader={Mail} iconColor="bg-indigo-100 text-indigo-600">
             <p className="text-4xl font-bold text-indigo-600">
               {emailCampaigns || 0}
             </p>
           </Card>
 
-          <Card title="Total de Receptores">
+          <Card title="Total Receptors" iconHeader={User} iconColor="bg-red-100 text-red-600">
             <p className="text-4xl font-bold text-red-600">
               {totalReceptors || 0}
             </p>
@@ -475,7 +431,7 @@ export default function DashboardAdmin() {
 
         {/* Menu de seleção */}
         <div className="w-full">
-          <div className="flex  bg-white rounded-md shadow-sm w-full">
+          <div className="flex flex-row bg-white rounded-lg shadow-sm w-full">
             {menus_selecao.map((menu) => {
               const active = selectedMenu === menu;
               return (
@@ -483,10 +439,16 @@ export default function DashboardAdmin() {
                   key={menu}
                   onClick={() => setSelectedMenu(menu)}
                   type="button"
-                  className={`w-full px-4 py-2  text-sm font-medium transition-colors focus:outline-none  ${active ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-100'}`}
+                  className={`
+  w-full px-5 py-2 rounded-lg text-sm font-semibold
+  transition-all
+  ${active
+                      ? 'bg-teal-400 text-white shadow-sm'
+                      : 'text-gray-500 hover:bg-gray-100'}
+`}
                 // accessibility: visual focus styles are provided; aria-pressed removed to satisfy linter
                 >
-                  {menu.charAt(0).toLocaleUpperCase().concat(menu.slice(1))}
+                  {dictionaty[menu]}
                 </button>
               );
             })}
@@ -496,45 +458,84 @@ export default function DashboardAdmin() {
         {/*Filter*/}
         {
           selectedMenu !== "receptores" && (
-            <div className="w-full">
-              <div className="w-full flex flex-row gap-6 items-center justify-end">
-                <div>
+            <div className="w-full  flex justify-end">
+
+              <div className="w-full md:w-6/12 flex items-end justify-end gap-6">
+                {/* Status */}
+                <div className="w-full flex flex-col gap-1 md:min-w-[180px]">
+                  <label
+                    htmlFor="status"
+                    className="text-xs font-medium text-gray-500"
+                  >
+                    Campaign Status
+                  </label>
+
                   <select
-                    name="status"
                     id="status"
-                    title="Status da Campanha"
+                    name="status"
                     value={status}
                     onChange={(e) => setFilterStatus(e.target.value)}
-                    className="w-full border border-gray-300 rounded px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="
+                      w-full
+                      rounded-lg
+                      border border-gray-300
+                      bg-white
+                      px-4 py-2
+                      text-sm text-gray-700
+                      shadow-sm
+                      focus:outline-none
+                      focus:ring-2 focus:ring-teal-400
+                      focus:border-teal-400
+                      transition
+                    "
                   >
-                    {
-                      status_campaigns?.map((campaign) => (
-                        <option key={campaign} value={campaign}>{campaign.charAt(0).toLocaleUpperCase().concat(campaign.slice(1))}</option>
-                      ))
-                    }
-
+                    {status_campaigns?.map((campaign) => (
+                      <option key={campaign} value={campaign}>
+                        {campaign.charAt(0).toUpperCase() + campaign.slice(1)}
+                      </option>
+                    ))}
                   </select>
                 </div>
-                <div>
+
+                {/* Ordenação */}
+                <div className="w-full flex flex-col gap-1 min-w-[180px]">
+                  <label
+                    htmlFor="ordenacao"
+                    className="text-xs font-medium text-gray-500"
+                  >
+                    Order By
+                  </label>
+
                   <select
-                    name="ordenacao"
                     id="ordenacao"
-                    title="Ordenar Por"
+                    name="ordenacao"
                     value={ordenacao}
                     onChange={(e) => setOrdenacao(e.target.value)}
-                    className="w-full border border-gray-300 rounded px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="
+          w-full
+          rounded-lg
+          border border-gray-300
+          bg-white
+          px-4 py-2
+          text-sm text-gray-700
+          shadow-sm
+          focus:outline-none
+          focus:ring-2 focus:ring-teal-400
+          focus:border-teal-400
+          transition
+        "
                   >
-                    {
-                      ["Descendente", "Ascendente"]?.map((ord) => (
-                        <option value={ord} key={ord}>{ord.charAt(0).toLocaleUpperCase().concat(ord.slice(1))}</option>
-                      ))
-                    }
-
+                    {["Descendente", "Ascendente"].map((ord) => (
+                      <option key={ord} value={ord}>
+                        {ord}
+                      </option>
+                    ))}
                   </select>
                 </div>
 
               </div>
             </div>
+
           )
         }
 
@@ -546,29 +547,85 @@ export default function DashboardAdmin() {
                 {
                   campaigns.length > 0 ? (
                     (campaigns)?.map((campaigns: Warning) => (
-                      <Card key={campaigns.id} title={""}>
-                        <div className="flex flex-row items-center justify-between">
-                          <div>
-                            <p className="text-gray-600">Nome: {campaigns?.name?.charAt(0).toLocaleUpperCase().concat(campaigns.name.slice(1))}</p>
-                            <p>Status: {campaigns.status.charAt(0).toLocaleUpperCase().concat(campaigns.status.slice(1))}</p>
-                            <p>Criado em: {campaigns?.created_at ? new Date(campaigns.created_at).toLocaleDateString('pt-br') : ''}</p>
-                            <p>Canal: {campaigns?.channel}</p>
-                            <p className="text-gray-600">Mensagem: {(campaigns.message).slice(0, 100)}</p>
+                      <Card key={campaigns.id} title="">
+                        <div className="flex items-start justify-between gap-4">
+                          {/* Conteúdo */}
+                          <div className="space-y-3">
+                            {/* Nome */}
+                            <h3 className="text-lg font-semibold text-gray-800">
+                              {campaigns.name.charAt(0).toUpperCase() + campaigns.name.slice(1)}
+                            </h3>
+
+                            {/* Metadados */}
+                            <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
+                              <span>
+                                <strong>Status:</strong>{" "}
+                                <span
+                                  className={`
+              inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium
+              ${campaigns.status === "ativo"
+                                      ? "bg-green-100 text-green-700"
+                                      : "bg-gray-200 text-gray-600"
+                                    }
+            `}
+                                >
+                                  {campaigns.status.charAt(0).toUpperCase() + campaigns.status.slice(1)}
+                                </span>
+                              </span>
+
+                              <span>
+                                <strong>Created At:</strong>{" "}
+                                {campaigns.created_at
+                                  ? new Date(campaigns.created_at).toLocaleDateString("pt-BR")
+                                  : "-"}
+                              </span>
+
+                              <span>
+                                <strong>Channel:</strong> {campaigns.channel}
+                              </span>
+                            </div>
+
+                            {/* Mensagem */}
+                            <p className="text-sm text-gray-600 leading-relaxed max-w-md">
+                              {campaigns.message.length > 100
+                                ? `${campaigns.message.slice(0, 100)}...`
+                                : campaigns.message}
+                            </p>
                           </div>
+
+                          {/* Ação */}
                           <button
                             type="button"
-                            onClick={() => handleSendMessages(campaigns.id, campaigns.channel, campaigns.message)}
-                            className="ml-4 inline-flex items-center justify-center rounded-md bg-blue-600 hover:bg-blue-700 text-white p-2"
+                            onClick={() =>
+                              handleSendMessages(
+                                campaigns.id,
+                                campaigns.channel,
+                                campaigns.message
+                              )
+                            }
+                            className="
+                              flex items-center justify-center
+                              w-10 h-10
+                              rounded-full
+                              bg-teal-400
+                              text-white
+                              hover:bg-teal-500
+                              transition-all
+                              shadow-sm
+                            "
                             aria-label="Iniciar campanha"
                           >
                             <Send className="w-5 h-5" />
                           </button>
                         </div>
                       </Card>
+
                     ))
                   ) : (
-                    <div className="w-full h-full flex flex-col items-center justify-center">
-                      <h1 className="text-[20px] font-bold text-gray-950">There is no campaigns registered</h1>
+                    <div className="flex flex-col items-center gap-2 text-gray-500">
+                      <Megaphone size={32} />
+                      <p className="font-semibold">No campaigns yet</p>
+                      <p className="text-sm">Create your first campaign to get started</p>
                     </div>
                   )
                 }
@@ -590,7 +647,7 @@ export default function DashboardAdmin() {
                               <button
                                 type="button"
                                 onClick={() => setIsMessageModalOpen(true)}
-                                className="ml-4 inline-flex items-center justify-center rounded-md bg-blue-600 hover:bg-blue-700 text-white p-2"
+                                className="ml-4 inline-flex items-center justify-center rounded-lg  bg-[#4FD1C5] hover:bg-[#4fd1c4c2] text-white p-2"
                                 aria-label="Iniciar campanha"
                               >
                                 <Send className="w-5 h-5" />
@@ -601,40 +658,47 @@ export default function DashboardAdmin() {
                       }
                     </div>
                   ) : (
-                    <div className="w-full h-full flex flex-col items-center justify-center">
-                      <h2 className="text-[20px] font-bold">There is no messages sent</h2>
+                    <div className="flex flex-col items-center gap-2 text-gray-500">
+                      <Smartphone size={32} />
+                      <p className="font-semibold">There is no messages sent</p>
+                      <p className="text-sm">Create a campaign first to send messages</p>
                     </div>
                   )
                 }
               </div>
             ) : (
               <div>
+
                 {
                   (receptors || [])?.length > 0 ? (
-                    <div className="w-full grid grid-cols-2 gap-6">
-                      {
-                        receptors?.map((message: Receptor) => (
-                          <Card key={message.id} title={""}>
-                            <div className="flex flex-row items-center justify-between">
-                              <div>
-                                <p className="text-gray-600">Name: {message.name}</p>
-                                <p>Telefone: {message.phone}</p>
-                                <p>E-mail: {message.email}</p>
-                              </div>
-                              <div>
-                                <p
-                                  className="ml-4 inline-flex items-center justify-center rounded-md bg-blue-600 hover:bg-blue-700 text-white p-2"
-                                >{message.preferences}</p>
-                              </div>
-
-                            </div>
-                          </Card>
-                        ))
-                      }
-                    </div>
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Name</TableHead>
+                          <TableHead>Email</TableHead>
+                          <TableHead>Phone Number</TableHead>
+                          <TableHead>Notification Preference</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {
+                          receptors?.map((message: Receptor) => (
+                            <TableRow key={message.id}>
+                              <TableCell>{message.name}</TableCell>
+                              <TableCell>{message.email}</TableCell>
+                              <TableCell>{message.phone}</TableCell>
+                              <TableCell>{message.preferences}</TableCell>
+                            </TableRow>
+                            
+                          ))
+                        }
+                      </TableBody>
+                    </Table>
                   ) : (
-                    <div className="w-full h-full flex flex-col items-center justify-center">
-                      <h2 className="text-[20px] font-bold">There is no receptors registered</h2>
+                    <div className="flex flex-col items-center gap-2 text-gray-500">
+                      <User size={32} />
+                      <p className="font-semibold">There is no receptors registered</p>
+                      <p className="text-sm">Receptors need to be registered to receive the notifications</p>
                     </div>
                   )
                 }
