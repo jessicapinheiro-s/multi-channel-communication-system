@@ -31,9 +31,9 @@ const dictionaty = {
 };
 
 const status_campaigns = [
-  "todos",
-  "criado",
-  "enviado"
+  "all",
+  "created",
+  "sent"
 ]
 
 export default function DashboardAdmin() {
@@ -47,8 +47,8 @@ export default function DashboardAdmin() {
   const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
   const [toastOpen, setToastOpen] = useState(false);
   const [selectedMenu, setSelectedMenu] = useState<string>(menus_selecao[0]);
-  const [status, setFilterStatus] = useState<string>('todos');
-  const [ordenacao, setOrdenacao] = useState<string>('descendente');
+  const [status, setFilterStatus] = useState<string>('all');
+  const [ordenacao, setOrdenacao] = useState<string>('descending');
 
   const {
     data: data_campaigns,
@@ -318,20 +318,20 @@ export default function DashboardAdmin() {
     let data = data_campaigns ? [...data_campaigns] : [];
 
     // filtro por status
-    if (status === 'criado') {
+    if (status === 'created') {
       data = data.filter(item => item.status === 'created');
-    } else if (status === 'enviado') {
+    } else if (status === 'sent') {
       data = data.filter(item => item.status === 'enviado');
     }
 
     // ordenação por data
-    if (ordenacao === 'ascendente') {
+    if (ordenacao === 'ascending') {
       data = data.sort(
         (a, b) =>
           new Date(a.created_at).getTime() -
           new Date(b.created_at).getTime()
       );
-    } else if (ordenacao === 'descendente') {
+    } else if (ordenacao === 'descending') {
       data = data.sort(
         (a, b) =>
           new Date(b.created_at).getTime() -
@@ -346,13 +346,13 @@ export default function DashboardAdmin() {
     let data = data_messages ? [...data_messages] : [];
 
     // ordenação por data
-    if (ordenacao === 'ascendente') {
+    if (ordenacao === 'ascending') {
       data = data.sort(
         (a, b) =>
           new Date(a.created_at).getTime() -
           new Date(b.created_at).getTime()
       );
-    } else if (ordenacao === 'descendente') {
+    } else if (ordenacao === 'descending') {
       data = data.sort(
         (a, b) =>
           new Date(b.created_at).getTime() -
@@ -525,9 +525,9 @@ export default function DashboardAdmin() {
           transition
         "
                   >
-                    {["Descendente", "Ascendente"].map((ord) => (
+                    {["descending", "ascending"].map((ord) => (
                       <option key={ord} value={ord}>
-                        {ord}
+                        {ord.charAt(0).toUpperCase() + ord.slice(1)}
                       </option>
                     ))}
                   </select>
@@ -713,8 +713,8 @@ export default function DashboardAdmin() {
       <MessageFormModal
         open={isMessageModalOpen}
         initialValue={campaign_info}
-        title="Nova campanha"
-        submitLabel="Iniciar"
+        title="Create a new Campaign"
+        submitLabel="Create"
         onClose={() => setIsMessageModalOpen(false)}
         onSubmit={(value) => {
           setCampaignInfo(value);

@@ -77,7 +77,7 @@ export default function FormRegisterLogin({ type, handleSubmitFun }: PropsData) 
                         <label className="text-sm font-medium text-gray-700">Name</label>
                         <input
                             {...register("name")}
-                            className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                            className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4fd1c5]"
                             type="text"
                             placeholder="Your full name"
                             aria-label="name"
@@ -91,7 +91,7 @@ export default function FormRegisterLogin({ type, handleSubmitFun }: PropsData) 
                             render={({ field }) => (
                                 <IMaskInput
                                     {...field}
-                                    className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                                    className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4fd1c5]"
                                     mask="+55 (00) 00000-0000"
                                     placeholder="Phone Number"
                                     onAccept={(value: any) => field.onChange(value)}
@@ -103,7 +103,7 @@ export default function FormRegisterLogin({ type, handleSubmitFun }: PropsData) 
                         <label className="text-sm font-medium text-gray-700">Preferences</label>
                         <input
                             {...register("preferences")}
-                            className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                            className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4fd1c5]"
                             type="text"
                             placeholder="sms,email"
                             aria-label="preferences"
@@ -114,7 +114,7 @@ export default function FormRegisterLogin({ type, handleSubmitFun }: PropsData) 
                 <label className="text-sm font-medium text-gray-700">Email</label>
                 <input
                     {...register("email")}
-                    className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                    className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4fd1c5]"
                     type="email"
                     placeholder="name@example.com"
                     aria-label="email"
@@ -126,7 +126,7 @@ export default function FormRegisterLogin({ type, handleSubmitFun }: PropsData) 
                         <label className="text-sm font-medium text-gray-700">Password</label>
                         <input
                             {...register("password")}
-                            className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                            className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4fd1c5]"
                             type="password"
                             placeholder="Your password"
                             aria-label="password"
@@ -143,7 +143,7 @@ export default function FormRegisterLogin({ type, handleSubmitFun }: PropsData) 
                     <div className="text-center text-sm text-gray-500">
                         {
                             type === "login" && (
-                                <Link to="/register" className="text-blue-600 underline">Not an administrator? Sign up to receive notifications.</Link>
+                                <Link to="/register" className="text--[#4fd1c5] underline">Not an administrator? Sign up to receive notifications.</Link>
                             ) 
                         }
 
