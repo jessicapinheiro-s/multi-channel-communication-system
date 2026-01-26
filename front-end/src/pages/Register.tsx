@@ -1,6 +1,5 @@
 import { useState } from "react";
 
-import { Link, useNavigate } from "react-router-dom";
 import FormRegisterLogin from "../components/form-resgiter-login/Form-resgiter-login";
 import LoadingModal from "../components/modals/Loanding-modal";
 import { Check } from "lucide-react";
@@ -12,7 +11,6 @@ interface RegisterDataProps {
     preferences?: string;
 }
 export default function Register() {
-    const navigate = useNavigate();
     const ambiente = import.meta.env.VITE_AMBIENTE_API;
     const [isLoanding, setIsLoading] = useState(false);
     const [sucessRegister, setSucessRegister] = useState(false);

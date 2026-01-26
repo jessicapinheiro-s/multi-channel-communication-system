@@ -17,6 +17,7 @@ import {
   TableRow,
 } from "../components/ui/table"
 import type { Receptor, SendEmailPros, ToastProps, Warning, WarningLogSent } from "../types/global-types"
+import { formatName, formatPhoneNumber } from "@/lib/utils"
 
 
 const menus_selecao = [
@@ -684,9 +685,9 @@ export default function DashboardAdmin() {
                         {
                           receptors?.map((message: Receptor) => (
                             <TableRow key={message.id}>
-                              <TableCell>{message.name}</TableCell>
+                              <TableCell>{formatName(message.name)}</TableCell>
                               <TableCell>{message.email}</TableCell>
-                              <TableCell>{message.phone}</TableCell>
+                              <TableCell>{formatPhoneNumber(message.phone)}</TableCell>
                               <TableCell>{message.preferences}</TableCell>
                             </TableRow>
                             
