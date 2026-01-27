@@ -3,6 +3,8 @@ import { useState } from "react";
 import FormRegisterLogin from "../components/form-resgiter-login/Form-resgiter-login";
 import LoadingModal from "../components/modals/Loanding-modal";
 import { Check } from "lucide-react";
+import { Toast } from "@/components";
+import type { ToastProps } from "@/types/global-types";
 interface RegisterDataProps {
     name?: string;
     email: string;
@@ -14,6 +16,14 @@ export default function Register() {
     const ambiente = import.meta.env.VITE_AMBIENTE_API;
     const [isLoanding, setIsLoading] = useState(false);
     const [sucessRegister, setSucessRegister] = useState(false);
+    const [toastOpen, setToastOpen] = useState(false);
+    const [toastInfo, setToastInfo] = useState<ToastProps>({
+        duration: 1000,
+        message: "",
+        title: "",
+        type: 'success'
+    });
+
 
     const handleRegister = async (data: RegisterDataProps) => {
         const obj_to_create = {
@@ -31,9 +41,16 @@ export default function Register() {
                 },
                 body: JSON.stringify(obj_to_create),
             });
+            const data = await response.json();
+
             if (!response.ok) {
-                console.error('Failed to register user:', response.statusText);
-                throw new Error('Failed to register');
+                console.error('Failed to register user:', data.error);
+                setToastInfo({
+                    message: data.error,
+                    title: "Failed to register user",
+                    type: 'error'
+                })
+                setToastOpen(true);
             }
             setSucessRegister(true);
             setIsLoading(false);
@@ -49,13 +66,13 @@ export default function Register() {
         <main className="min-h-screen flex flex-col items-center justify-center">
             <LoadingModal open={isLoanding} message="Criando usuário.." />
             {
-                sucessRegister ? (
+                (sucessRegister && !toastOpen) ? (
                     <div className="min-h-screen flex items-center justify-center bg-white px-4">
                         <div className="w-full max-w-md rounded-xl bg-white p-8 text-center shadow-lg">
                             <div className="mb-4 flex flex-col items-center justify-center">
-                               <div className="p-2 rounded-lg bg-green-600">
-                                 <Check size={40} color="white"/>
-                               </div>
+                                <div className="p-2 rounded-lg bg-green-600">
+                                    <Check size={40} color="white" />
+                                </div>
                             </div>
 
                             <h1 className="mb-3 text-2xl font-semibold text-gray-800">
@@ -76,6 +93,8 @@ export default function Register() {
                     <FormRegisterLogin handleSubmitFun={handleRegister} type="register" />
                 )
             }
+
+            <Toast open={toastOpen} duration={toastInfo.duration} message={toastInfo.message} title={toastInfo.title} type={toastInfo.type} />
         </main>
     );
 }
