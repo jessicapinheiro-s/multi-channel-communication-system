@@ -31,7 +31,7 @@ export function formatName(name) {
       .toLocaleUpperCase()
       .concat(arr_name[0].slice(1));
   } else {
-    return arr_name.map((name, index) => {
+    const arr_words_maped = arr_name.map((name, index) => {
       let name_formated = name
         .charAt(0)
         .toLocaleUpperCase()
@@ -43,5 +43,7 @@ export function formatName(name) {
 
       return name_formated;
     });
+
+    return arr_words_maped.join(' ')
   }
 }

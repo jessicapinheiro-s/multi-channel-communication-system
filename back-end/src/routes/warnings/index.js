@@ -8,7 +8,6 @@ import {
 import { Router } from "express";
 import auth from "../auth/index.js";
 import { validate } from "../../middlewares/validate.js";
-import { createWarningSentLogSchema } from "../../schemas/warning-log-schema.js";
 import { createWarningSchema, deleteWarningSchema, getByIdWarningSchema, updateWarningSchema } from "../../schemas/warning-schema.js";
 const router_warning = Router();
 

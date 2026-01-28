@@ -37,15 +37,14 @@ export const delete_warning = async (req, res) => {
 };
 
 export const update_warning = async (req, res) => {
-  const { id } = req.params;
-  const item_info = req.body;
+  const { id, itemInfo } = req.body;
 
-  if (!id) {
-    return res.status(400).json({ error: "Missing id parameter" });
+  if (!id || !itemInfo) {
+    return res.status(400).json({ error: "Missing id or itemInfo in request body" });
   }
 
   try {
-    const response = await f_update_warning({ id, item_info });
+    const response = await f_update_warning({ id, item_info: itemInfo });
     return res.status(200).json(response);
   } catch (error) {
     return res.status(500).json({ error: "Internal Server Error" });

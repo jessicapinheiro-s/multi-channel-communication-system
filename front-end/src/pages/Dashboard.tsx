@@ -190,7 +190,6 @@ export default function DashboardAdmin() {
   }
 
   const sendEmail = async (item_info: SendEmailPros) => {
-    console.log(item_info)
     if (!item_info.from_email || !item_info.from_name || !item_info.message || !item_info.recipient_id || !item_info.subject || !item_info.to_email || !item_info.to_name || !item_info.warning_id) {
       console.error('Há alguma informação faltando', item_info);
       return;
@@ -206,13 +205,42 @@ export default function DashboardAdmin() {
         body: JSON.stringify(item_info)
       });
 
-      console.log(response)
+      return response;
     } catch (error) {
       console.error('Erro ao tentar enviar o email');
+      throw error;
     }
   }
 
-  /*const createWarningLog = async (recipient: any, campaign_id: number, channel: string) => {
+  const update_campaign_status = async (obj_item_info: { id: number; itemInfo: { status?: string; [key: string]: any } }): Promise<Response> => {
+    if (!obj_item_info?.id || !obj_item_info?.itemInfo) {
+      throw new Error('Invalid payload for update_campaign_status');
+    }
+
+    try {
+      const response = await fetch(`${ambiente}/warnings/update`, {
+        method: 'PATCH',
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(obj_item_info)
+      });
+
+      if (!response.ok) {
+        const text = await response.text();
+        console.error('update_campaign_status failed:', text);
+        throw new Error(text || 'Update request failed');
+      }
+
+      return response;
+    } catch (error) {
+      console.error('Erro ao tentar atualizar a campanha', error);
+      throw error;
+    }
+  }
+
+  const createWarningLog = async (recipient: any, campaign_id: number, channel: string) => {
     try {
       const payload = {
         user_id: recipient.id ?? recipient.user_id ?? null,
@@ -238,7 +266,7 @@ export default function DashboardAdmin() {
       console.error('createWarningLog error:', error);
       return null;
     }
-  }*/
+  }
 
   const handleSendMessages = async (campaign_id: number, channel: string, message: string) => {
     console.log('handleSendMessages', campaign_id, channel, message)
@@ -263,21 +291,33 @@ export default function DashboardAdmin() {
 
       const filtered = recipients.filter((r: Receptor) => r.preferences === channel);
 
-
+      let hasError: boolean = false;
       if (filtered.length > 0) {
         // send logs sequentially to avoid overwhelming the backend / external providers
         for (const recipient of filtered) {
-          await sendEmail({
-            to_email: recipient.email,
-            to_name: recipient.name,
-            from_email: "jessicasilva.js1314@gmail.com",
-            message: message,
-            from_name: "Sitema de Envio de Avisos",
-            recipient_id: recipient.id,
-            subject: "Administrador",
-            warning_id: campaign_id
-          });
+          try {
+            await sendEmail({
+              to_email: recipient.email,
+              to_name: recipient.name,
+              from_email: "jessicasilva.js1314@gmail.com",
+              message: message,
+              from_name: "Sitema de Envio de Avisos",
+              recipient_id: recipient.id,
+              subject: "Administrador",
+              warning_id: campaign_id
+            });
+          } catch (error) {
+            hasError = true;
+          }
         }
+
+        await update_campaign_status({
+          id: campaign_id,
+          itemInfo: {
+            status: hasError ? "sent with failures" : "sent sucessfully"
+          }
+        })
+
 
         setToastInfo({
           duration: 1000,
@@ -366,6 +406,8 @@ export default function DashboardAdmin() {
   const receptors = useMemo(() => {
     return data_receptors;
   }, [data_receptors]);
+
+
   return (
     <main className="flex flex-row min-h-screen bg-gray-50">
       <Header
@@ -690,7 +732,7 @@ export default function DashboardAdmin() {
                               <TableCell>{formatPhoneNumber(message.phone)}</TableCell>
                               <TableCell>{message.preferences}</TableCell>
                             </TableRow>
-                            
+
                           ))
                         }
                       </TableBody>

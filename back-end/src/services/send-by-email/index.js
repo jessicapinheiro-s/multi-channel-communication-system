@@ -1,4 +1,4 @@
-import { formatName } from "@/utils/utils.js";
+import { formatName } from "../../utils/utils.js";
 import prisma from "../../config/prisma.js";
 
 const BREVO_URL = process.env.BREVO_URL;
@@ -49,37 +49,38 @@ export const f_send_by_email = async (data) => {
   try {
     const body_to_send = {
       sender: {
-        name: formatName(from_name),
+        name: formatName(from_name) || '',
         email: from_email,
       },
       to: [
         {
           email: to_email,
-          name: formatName(to_name),
+          name: formatName(to_name) || '',
         },
       ],
-      subject: formatName(subject),
+      subject: subject || '',
       htmlContent: template_content,
+      textContent: message,
     };
 
     const response = await fetch(`${BREVO_URL}/email`, {
       method: "POST",
       headers: {
-        accept: "application/json",
+        Accept: "application/json",
         "api-key": BREVO_API_KEY,
-        "content-type": "application/json",
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(body_to_send),
     });
 
     if (!response.ok) {
-      throw new Error(
-        `Erro Brevo (${response.status}): ${response.statusText || "Falha ao enviar email"}`,
-      );
+      const text = await response.text();
+      throw new Error(`Erro ao tentar enviar o e-mail: ${response.status} ${text}`);
     }
 
-    return response;
+    const json = await response.json();
+    return json;
   } catch (error) {
-    throw new Error(`Erro ao tentar enviar o e-mail, ${error.message}`);
+    throw new Error(`Erro ao tentar enviar o e-mail: ${error.message || error}`);
   }
 };
