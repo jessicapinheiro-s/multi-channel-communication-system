@@ -21,3 +21,27 @@ export const generate_jwt_token = (payload, secret, expiresIn) => {
 
   return token;
 };
+
+export function formatName(name) {
+  const arr_name = name.split(" ");
+
+  if (arr_name.length === 0) {
+    return arr_name[0]
+      .charAt(0)
+      .toLocaleUpperCase()
+      .concat(arr_name[0].slice(1));
+  } else {
+    return arr_name.map((name, index) => {
+      let name_formated = name
+        .charAt(0)
+        .toLocaleUpperCase()
+        .concat(name.slice(1));
+
+      if (index + 1 !== arr_name.length) {
+        name_formated = name_formated.concat(" ");
+      }
+
+      return name_formated;
+    });
+  }
+}

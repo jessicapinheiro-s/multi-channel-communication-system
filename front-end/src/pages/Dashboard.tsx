@@ -274,7 +274,7 @@ export default function DashboardAdmin() {
             message: message,
             from_name: "Sitema de Envio de Avisos",
             recipient_id: recipient.id,
-            subject: "Teste",
+            subject: "Administrador",
             warning_id: campaign_id
           });
         }

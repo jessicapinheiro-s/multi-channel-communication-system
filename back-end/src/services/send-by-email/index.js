@@ -1,3 +1,4 @@
+import { formatName } from "@/utils/utils.js";
 import prisma from "../../config/prisma.js";
 
 const BREVO_URL = process.env.BREVO_URL;
@@ -40,7 +41,7 @@ export const f_send_by_email = async (data) => {
 
   const template_content = template.body
     .toString()
-    .replace("{{nome}}", to_name)
+    .replace("{{nome}}", formatName(to_name))
     .replace("{{titulo}}", "")
     .replace("{{texto}}", message)
     .toString();
@@ -48,16 +49,16 @@ export const f_send_by_email = async (data) => {
   try {
     const body_to_send = {
       sender: {
-        name: from_name,
+        name: formatName(from_name),
         email: from_email,
       },
       to: [
         {
           email: to_email,
-          name: to_name,
+          name: formatName(to_name),
         },
       ],
-      subject: subject,
+      subject: formatName(subject),
       htmlContent: template_content,
     };
 
