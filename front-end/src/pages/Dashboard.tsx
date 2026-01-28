@@ -296,6 +296,11 @@ export default function DashboardAdmin() {
         // send logs sequentially to avoid overwhelming the backend / external providers
         for (const recipient of filtered) {
           try {
+            const response_warning_log = await createWarningLog(recipient, campaign_id, channel);
+
+            if(!response_warning_log.ok) {
+              throw new Error(`Fail to create warning log`)
+            }
             await sendEmail({
               to_email: recipient.email,
               to_name: recipient.name,

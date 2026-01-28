@@ -6,7 +6,7 @@ import {
 
 export const create_warning_sent_log = async (req, res) => {
   const { user_id, warningId, channel, sent_at } = req.body;
-  if (!user_id || !warningId || !channel || !sent_at) {
+  if (!user_id || !warningId || !channel) {
     return res.status(400).json({ error: "Missing required fields" });
   }
   try {
