@@ -13,7 +13,7 @@ dotenv.config();
 const app = express();
 
 app.use(cors({
-  origin: ["http://localhost:5173", "https://multi-channel-communication-system.vercel.app"],
+  origin: ["http://localhost:5173", "https://multi-channel-communication-system-psi.vercel.app"],
   credentials: true,
 }));
 
