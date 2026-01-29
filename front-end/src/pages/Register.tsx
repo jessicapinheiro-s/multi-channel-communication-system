@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import FormRegisterLogin from "../components/form-resgiter-login/Form-resgiter-login";
-import LoadingModal from "../components/modals/Loanding-modal";
+import LoadingModal from "../components/modals/LoandingModal";
 import { Check } from "lucide-react";
 import { Toast } from "@/components";
 import type { ToastProps } from "@/types/global-types";

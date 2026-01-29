@@ -4,7 +4,7 @@ import FormRegisterLogin from "../components/form-resgiter-login/Form-resgiter-l
 import type { FormData } from "../components/form-resgiter-login/Form-resgiter-login";
 
 import { useUserStore } from "../../stores/user";
-import LoadingModal from "../components/modals/Loanding-modal";
+import LoadingModal from "../components/modals/LoandingModal";
 interface LoginDataProps extends FormData {}
 export default function Login() {
     const navigate = useNavigate();

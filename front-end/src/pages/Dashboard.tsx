@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react"
 import { Header } from "../components/header/Header"
 import { Card } from "../components/card/Card-simple"
-import LoadingModal from "../components/modals/Loanding-modal"
+import LoadingModal from "../components/modals/LoandingModal"
 import MessageFormModal from "../components/modals/MessageFormModal"
 import { Toast } from "../components"
 import { Mail, Megaphone, Send, Smartphone, User } from 'lucide-react'
