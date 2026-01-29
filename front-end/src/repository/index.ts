@@ -1,4 +1,4 @@
-import type { Receptor, Warning, WarningLogSent } from "../pages/Dashboard";
+import type { Receptor, Warning, WarningLogSent } from "@/types/global-types";
 
 const ambiente = import.meta.env.VITE_AMBIENTE_API;
 
@@ -67,7 +67,7 @@ export const getTotalEmails = async () => {
   }
 };
 
-export const fetchCampaigns = async (pageParam?: number): Promise<Warning[]> => {
+export const fetchCampaigns = async (): Promise<Warning[]> => {
   const response = await fetch(`${ambiente}/warnings/get-all`, {
     method: "GET",
     credentials: "include",
@@ -75,7 +75,7 @@ export const fetchCampaigns = async (pageParam?: number): Promise<Warning[]> => 
   return response.json();
 };
 
-export const fetchReceptors = async (pageParam?: number): Promise<Receptor[]> => {
+export const fetchReceptors = async (): Promise<Receptor[]> => {
   const response = await fetch(`${ambiente}/recipients/get-all`, {
     method: "GET",
     credentials: "include",
@@ -84,7 +84,7 @@ export const fetchReceptors = async (pageParam?: number): Promise<Receptor[]> =>
 };
 
 export const fetchMessages = async (
-  pageParam?: number
+  
 ): Promise<WarningLogSent[]> => {
   const response = await fetch(`${ambiente}/warnings_logs/get-all`, {
     method: "GET",

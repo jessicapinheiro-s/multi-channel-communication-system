@@ -56,7 +56,7 @@ export default function DashboardAdmin() {
   } = useQuery({
     queryKey: ['data', 'campanhas'],
     queryFn: async () => {
-      return await fetchCampaigns(3)
+      return await fetchCampaigns()
     },
     retry: 2,
     enabled: selectedMenu === 'campanhas',
@@ -68,7 +68,7 @@ export default function DashboardAdmin() {
   } = useQuery({
     queryKey: ['data', 'receptores'],
     queryFn: async () => {
-      return await fetchReceptors(3)
+      return await fetchReceptors()
     },
     retry: 2,
     enabled: selectedMenu === 'receptores',
@@ -81,7 +81,7 @@ export default function DashboardAdmin() {
   } = useQuery({
     queryKey: ['data', 'mensagens'],
     queryFn: async () => {
-      return await fetchMessages(3)
+      return await fetchMessages()
     },
     retry: 2,
     enabled: selectedMenu === 'mensagens',

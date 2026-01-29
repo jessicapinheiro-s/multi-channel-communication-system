@@ -25,8 +25,6 @@ export default function MessageFormModal({
 }: MessageFormModalProps) {
   const [value, setValue] = useState<CampaignData>(initialValue);
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
-  const inputRefName = useRef<HTMLTextAreaElement | null>(null);
-
 
   useEffect(() => {
     setValue(initialValue);
