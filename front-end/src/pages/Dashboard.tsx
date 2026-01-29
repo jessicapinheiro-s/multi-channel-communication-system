@@ -269,7 +269,6 @@ export default function DashboardAdmin() {
   }
 
   const handleSendMessages = async (campaign_id: number, channel: string, message: string) => {
-    console.log('handleSendMessages', campaign_id, channel, message)
     try {
       setIsLoading(true);
       const response = await fetch(`${ambiente}/recipients/get-all`, {
