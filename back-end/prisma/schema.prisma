@@ -17,7 +17,6 @@ model User {
   phone                String?
   warnings_preferences String
   role                 String              @default("user")
-  warning_logs_sent    Warning_logs_sent[]
 }
 
 model Warnings {
@@ -37,8 +36,9 @@ model Warning_logs_sent {
   sent_at    DateTime @default(now())
   channel    String
   created_at DateTime @default(now())
-  user       User     @relation(fields: [user_id], references: [id])
-  warning    Warnings @relation(fields: [warningId], references: [id])
+
+  user       Recipient @relation(fields: [user_id], references: [id])
+  warning    Warnings  @relation(fields: [warningId], references: [id])
 }
 
 model Recipient {
@@ -48,6 +48,7 @@ model Recipient {
   phone      String?   @unique
   preferences String?
   created_at DateTime @default(now())
+  warning_logs_sent    Warning_logs_sent[]
 }
 
 model Templates_email {
