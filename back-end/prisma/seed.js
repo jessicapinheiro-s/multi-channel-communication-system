@@ -9,6 +9,19 @@ async function main() {
   const PHONE = process.env.ADMIN_PHONE;
   const passwordHash = await bcrypt.hash(PASSWORD, 10);
 
+
+  if(!EMAIL || !PASSWORD || !PHONE){
+    throw new Error('Admin credentials is missing')
+  }
+
+  const alreadyExists = await prisma.user.findUnique({
+    where: {
+      email: EMAIL
+    }
+  });
+
+  if(alreadyExists) return;
+  
   await prisma.user.create({
     data: {
       email: EMAIL,
