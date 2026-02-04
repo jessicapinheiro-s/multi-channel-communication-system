@@ -212,7 +212,7 @@ export default function DashboardAdmin() {
     }
   }
 
-  const update_campaign_status = async (obj_item_info: { id: number; itemInfo: { status?: string; [key: string]: any } }): Promise<Response> => {
+  const update_campaign_status = async (obj_item_info: { id: number; itemInfo: { status?: string;[key: string]: any } }): Promise<Response> => {
     if (!obj_item_info?.id || !obj_item_info?.itemInfo) {
       throw new Error('Invalid payload for update_campaign_status');
     }
@@ -297,7 +297,7 @@ export default function DashboardAdmin() {
           try {
             const response_warning_log = await createWarningLog(recipient, campaign_id, channel);
 
-            if(!response_warning_log.ok) {
+            if (!response_warning_log.ok) {
               throw new Error(`Fail to create warning log`)
             }
             await sendEmail({
@@ -684,23 +684,94 @@ export default function DashboardAdmin() {
                     <div className="w-full flex flex-col gap-4">
                       {
                         messages?.map((message: WarningLogSent) => (
-                          <Card key={message.id} title={""}>
-                            <div className="flex flex-row items-center justify-between">
-                              <div>
-                                <p className="text-gray-600">{message.user?.name}</p>
-                                <p>{message.created_at}</p>
-                                <p>{message.channel}</p>
+                          <Card key={message.id} title="">
+                            <div className="flex items-start justify-between gap-4">
+                              {/* Conteúdo */}
+                              <div className="space-y-3">
+                                {/* Usuário */}
+                                <h3 className="text-lg font-semibold text-gray-800">
+                                  {message.user?.name ?? `Usuário #${message.user_id}`}
+                                </h3>
+
+                                {/* Metadados principais */}
+                                <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
+                                  <span>
+                                    <strong>ID:</strong> {message.id}
+                                  </span>
+
+                                  <span>
+                                    <strong>Warning ID:</strong> {message.warningId}
+                                  </span>
+
+                                  <span>
+                                    <strong>User ID:</strong> {message.user_id}
+                                  </span>
+                                </div>
+
+                                {/* Datas */}
+                                <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
+                                  <span>
+                                    <strong>Created At:</strong>{" "}
+                                    {message.created_at
+                                      ? new Date(message.created_at).toLocaleString("pt-BR")
+                                      : "-"}
+                                  </span>
+
+                                  <span>
+                                    <strong>Sent At:</strong>{" "}
+                                    {message.sent_at
+                                      ? new Date(message.sent_at).toLocaleString("pt-BR")
+                                      : "Não enviado"}
+                                  </span>
+                                </div>
+
+                                {/* Canal */}
+                                <div className="flex items-center gap-2 text-sm">
+                                  <strong className="text-gray-600">Channel:</strong>
+                                  <span
+                                    className="
+            inline-flex items-center px-2 py-0.5 rounded-full
+            text-xs font-medium
+            bg-blue-100 text-blue-700
+          "
+                                  >
+                                    {message.channel}
+                                  </span>
+                                </div>
+
+                                {/* Warning associada */}
+                                {message.warning && (
+                                  <p className="text-sm text-gray-600 leading-relaxed max-w-md">
+                                    <strong>Warning:</strong>{" "}
+                                    {message.warning.message.length > 100
+                                      ? `${message.warning.message.slice(0, 100)}...`
+                                      : message.warning.message}
+                                  </p>
+                                )}
                               </div>
+
+                              {/* Ação */}
                               <button
                                 type="button"
                                 onClick={() => setIsMessageModalOpen(true)}
-                                className="ml-4 inline-flex items-center justify-center rounded-lg  bg-[#4FD1C5] hover:bg-[#4fd1c4c2] text-white p-2"
-                                aria-label="Iniciar campanha"
+                                className="
+                                  flex items-center justify-center
+                                  w-10 h-10
+                                  rounded-full
+                                  bg-teal-400
+                                  text-white
+                                  hover:bg-teal-500
+                                  transition-all
+                                  shadow-sm
+                                "
+                                aria-label="Visualizar mensagem"
                               >
                                 <Send className="w-5 h-5" />
                               </button>
                             </div>
                           </Card>
+
+
                         ))
                       }
                     </div>
