@@ -273,6 +273,7 @@ export default function DashboardAdmin() {
     try {
       const response = await fetch(`${ambiente}/warnings_logs/update`, {
         method: "PATCH",
+        credentials: "include",
         headers: {
           'Content-Type': 'application/json'
         },
