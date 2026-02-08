@@ -268,6 +268,24 @@ export default function DashboardAdmin() {
     }
   }
 
+  const update_warning_log = async (log_id: number, log_info: any) => {
+    try {
+      const response = await fetch(`${ambiente}/warnings_logs/update `, {
+        method: "PATCH",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          id: log_id,
+          item_info: log_info
+        })
+      });
+
+    } catch (error) {
+      throw new Error('Fail to update warning log')
+    }
+  }
+
   const handleSendMessages = async (campaign_id: number, channel: string, message: string) => {
     try {
       setIsLoading(true);
@@ -300,7 +318,8 @@ export default function DashboardAdmin() {
             if (!response_warning_log.ok) {
               throw new Error(`Fail to create warning log`)
             }
-            await sendEmail({
+
+            const response = await sendEmail({
               to_email: recipient.email,
               to_name: recipient.name,
               from_email: "jessicasilva.js1314@gmail.com",
@@ -310,6 +329,13 @@ export default function DashboardAdmin() {
               subject: "Administrador",
               warning_id: campaign_id
             });
+
+            if (response && !response.ok) {
+              const waning_log_id: number = response_warning_log.id;
+
+
+
+            }
           } catch (error) {
             hasError = true;
           }
