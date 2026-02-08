@@ -16,6 +16,7 @@ export interface WarningLogSent {
   id: number;
   warningId: number;
   user_id: number;
+  status: string;
   sent_at: string;     // ou Date
   channel: string;
   created_at: string; // ou Date

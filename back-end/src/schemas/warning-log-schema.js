@@ -4,7 +4,7 @@ export const createWarningSentLogSchema = z.object({
   user_id: z.number(),
   warningId: z.number(),
   channel: z.enum(["email", "sms"]),
-  status: z.enum(["sent", "failed to send"]),
+  status: z.enum(["created", "sent", "failed to send"]),
 });
 
 export const getByIdWarningSentLogSchema = z.object({

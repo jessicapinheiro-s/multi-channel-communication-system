@@ -196,7 +196,7 @@ export default function DashboardAdmin() {
     }
 
     try {
-      const response = fetch(`${ambiente}/emails/create`, {
+      const response = await fetch(`${ambiente}/emails/create`, {
         method: 'POST',
         credentials: "include",
         headers: {
@@ -207,7 +207,7 @@ export default function DashboardAdmin() {
 
       return response;
     } catch (error) {
-      console.error('Erro ao tentar enviar o email');
+      console.error('Erro ao tentar enviar o email', error);
       throw error;
     }
   }
@@ -240,12 +240,13 @@ export default function DashboardAdmin() {
     }
   }
 
-  const createWarningLog = async (recipient: any, campaign_id: number, channel: string) => {
+  const createWarningLog = async (recipient: any, campaign_id: number, channel: string, status: string) => {
     try {
       const payload = {
         user_id: recipient.id ?? recipient.user_id ?? null,
         warningId: campaign_id,
         channel,
+        status: status,
         sent_at: new Date().toISOString(),
       };
 
@@ -270,7 +271,7 @@ export default function DashboardAdmin() {
 
   const update_warning_log = async (log_id: number, log_info: any) => {
     try {
-      const response = await fetch(`${ambiente}/warnings_logs/update `, {
+      const response = await fetch(`${ambiente}/warnings_logs/update`, {
         method: "PATCH",
         headers: {
           'Content-Type': 'application/json'
@@ -280,6 +281,14 @@ export default function DashboardAdmin() {
           item_info: log_info
         })
       });
+
+      if (!response.ok) {
+        const text = await response.text();
+        console.error('update_warning_log failed:', text);
+        throw new Error(text || 'Fail to update warning log');
+      }
+
+      return response;
 
     } catch (error) {
       throw new Error('Fail to update warning log')
@@ -313,9 +322,10 @@ export default function DashboardAdmin() {
         // send logs sequentially to avoid overwhelming the backend / external providers
         for (const recipient of filtered) {
           try {
-            const response_warning_log = await createWarningLog(recipient, campaign_id, channel);
+            const response_warning_log = await createWarningLog(recipient, campaign_id, channel, "created");
 
-            if (!response_warning_log.ok) {
+            // createWarningLog returns parsed JSON (or null) — it does not have a `.ok` property.
+            if (!response_warning_log || !response_warning_log.id) {
               throw new Error(`Fail to create warning log`)
             }
 
@@ -330,12 +340,8 @@ export default function DashboardAdmin() {
               warning_id: campaign_id
             });
 
-            if (response && !response.ok) {
-              const waning_log_id: number = response_warning_log.id;
+            await update_warning_log(response_warning_log.id, { status: response && !response.ok ? 'failed to send' : "sent" })
 
-
-
-            }
           } catch (error) {
             hasError = true;
           }
@@ -752,17 +758,31 @@ export default function DashboardAdmin() {
                                 </div>
 
                                 {/* Canal */}
-                                <div className="flex items-center gap-2 text-sm">
-                                  <strong className="text-gray-600">Channel:</strong>
-                                  <span
-                                    className="
-            inline-flex items-center px-2 py-0.5 rounded-full
-            text-xs font-medium
-            bg-blue-100 text-blue-700
-          "
-                                  >
-                                    {message.channel}
-                                  </span>
+                                <div className="flex flex-row items-center justify-start gap-4">
+                                  <div className="flex items-center gap-2 text-sm">
+                                    <strong className="text-gray-600">Channel:</strong>
+                                    <span
+                                      className="
+                                    inline-flex items-center px-2 py-0.5 rounded-full
+                                    text-xs font-medium
+                                    bg-blue-100 text-blue-700
+                                  "
+                                    >
+                                      {formatName(message.channel)}
+                                    </span>
+                                  </div>
+                                  <div className="flex items-center gap-2 text-sm">
+                                    <strong className="text-gray-600">Status:</strong>
+                                    <span
+                                      className="
+                                      inline-flex items-center px-2 py-0.5 rounded-full
+                                      text-xs font-medium
+                                      bg-green-100 text-green-700
+                                    "
+                                    >
+                                      {formatName(message.status)}
+                                    </span>
+                                  </div>
                                 </div>
 
                                 {/* Warning associada */}
