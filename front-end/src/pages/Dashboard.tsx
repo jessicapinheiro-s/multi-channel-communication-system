@@ -212,6 +212,10 @@ export default function DashboardAdmin() {
     }
   }
 
+  const sendSMS = async (numbers: string[], message: string) => {
+
+  }
+
   const update_campaign_status = async (obj_item_info: { id: number; itemInfo: { status?: string;[key: string]: any } }): Promise<Response> => {
     if (!obj_item_info?.id || !obj_item_info?.itemInfo) {
       throw new Error('Invalid payload for update_campaign_status');
@@ -316,37 +320,44 @@ export default function DashboardAdmin() {
 
       const recipients = await response.json();
 
-      const filtered = recipients.filter((r: Receptor) => r.preferences === channel);
+      const filtered: Receptor[] | [] = recipients.filter((r: Receptor) => r.preferences === channel);
 
       let hasError: boolean = false;
       if (filtered.length > 0) {
-        // send logs sequentially to avoid overwhelming the backend / external providers
-        for (const recipient of filtered) {
-          try {
-            const response_warning_log = await createWarningLog(recipient, campaign_id, channel, "created");
+        if (channel === 'email') {
+          for (const recipient of filtered) {
+            try {
+              const response_warning_log = await createWarningLog(recipient, campaign_id, channel, "created");
 
-            // createWarningLog returns parsed JSON (or null) — it does not have a `.ok` property.
-            if (!response_warning_log || !response_warning_log.id) {
-              throw new Error(`Fail to create warning log`)
+              // createWarningLog returns parsed JSON (or null) — it does not have a `.ok` property.
+              if (!response_warning_log || !response_warning_log.id) {
+                throw new Error(`Fail to create warning log`)
+              }
+
+              const response = await sendEmail({
+                to_email: recipient.email,
+                to_name: recipient.name,
+                from_email: "jessicasilva.js1314@gmail.com",
+                message: message,
+                from_name: "Sitema de Envio de Avisos",
+                recipient_id: recipient.id,
+                subject: "Administrador",
+                warning_id: campaign_id
+              });
+
+
+              await update_warning_log(response_warning_log.id, { status: response && !response.ok ? 'failed to send' : "sent" })
+
+            } catch (error) {
+              hasError = true;
             }
-
-            const response = await sendEmail({
-              to_email: recipient.email,
-              to_name: recipient.name,
-              from_email: "jessicasilva.js1314@gmail.com",
-              message: message,
-              from_name: "Sitema de Envio de Avisos",
-              recipient_id: recipient.id,
-              subject: "Administrador",
-              warning_id: campaign_id
-            });
-
-            await update_warning_log(response_warning_log.id, { status: response && !response.ok ? 'failed to send' : "sent" })
-
-          } catch (error) {
-            hasError = true;
           }
+        } else {
+          const response = await sendSMS(filtered.map(receptor => receptor.phone), message);
+
+          //esperar resposta com 
         }
+
 
         await update_campaign_status({
           id: campaign_id,
@@ -354,7 +365,6 @@ export default function DashboardAdmin() {
             status: hasError ? "sent with failures" : "sent sucessfully"
           }
         })
-
 
         setToastInfo({
           duration: 1000,
