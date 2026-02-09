@@ -13,7 +13,7 @@ export const getByIdWarningSentLogSchema = z.object({
 
 export const updateWarningLogByIdSchema = z.object({
   id: z.number(),
-  item_info: {
+  item_info: z.object({
     status: z.enum(["created", "sent", "failed to send"]),
-  },
+  }),
 });
