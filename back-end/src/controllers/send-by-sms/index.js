@@ -1,4 +1,4 @@
-import { f_send_by_sms } from "../../services/send-by-sms";
+import { f_send_by_sms } from "../../services/send-by-sms/index.js";
 
 export const sendBySMS = async (req, res) => {
   const { message, destination_number } = await req.body;
