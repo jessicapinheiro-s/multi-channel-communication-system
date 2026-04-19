@@ -1,6 +1,6 @@
-import { sendBySMS } from '@/controllers/send-by-sms';
-import { auth } from '@/middlewares/auth';
-import { validate } from '@/middlewares/validate';
+import { sendBySMS } from '../../controllers/send-by-sms/index.js';
+import { auth } from '../../middlewares/auth.js';
+import { validate } from '../../middlewares/validate.js';
 import { Router } from 'express';
 
 const send_by_sms_router = Router();

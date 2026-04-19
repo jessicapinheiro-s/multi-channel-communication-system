@@ -1,4 +1,4 @@
-import type { Receptor, Warning, WarningLogSent } from "@/types/global-types";
+import type { Receptor, Warning, WarningLogSent } from "../types/global-types";
 
 const ambiente = import.meta.env.VITE_AMBIENTE_API;
 

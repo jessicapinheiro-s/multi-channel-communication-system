@@ -17,7 +17,7 @@ import {
   TableRow,
 } from "../components/ui/table"
 import type { Receptor, SendEmailPros, ToastProps, Warning, WarningLogSent } from "../types/global-types"
-import { formatName, formatPhoneNumber } from "@/lib/utils"
+import { formatName, formatPhoneNumber } from "../lib/utils"
 
 
 const menus_selecao = [

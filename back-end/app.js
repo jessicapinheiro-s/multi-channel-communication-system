@@ -8,7 +8,7 @@ import auth_router from "./src/routes/auth/index.js";
 import router_recipient from "./src/routes/recipient/index.js";
 import send_by_email_router from "./src/routes/send-by-email/index.js";
 import cookieParser from "cookie-parser";
-import send_by_sms_router from "@/routes/send-by-sms/index.js";
+import send_by_sms_router from "./src/routes/send-by-sms/index.js";
 
 dotenv.config();
 const app = express();
