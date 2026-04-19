@@ -213,7 +213,31 @@ export default function DashboardAdmin() {
   }
 
   const sendSMS = async (numbers: string[], message: string) => {
+    if (numbers.length === 0 || !message) {
+      return false;
+    }
 
+    const body_content = {
+      destination_number: numbers,
+      message: message
+    }
+
+
+    try {
+      const response = await fetch(`${ambiente}/sms/create`, {
+        method: 'POST',
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(body_content)
+      });
+
+      return response;
+    } catch (error) {
+      console.error('Erro ao tentar enviar o sms', error);
+      throw error;
+    }
   }
 
   const update_campaign_status = async (obj_item_info: { id: number; itemInfo: { status?: string;[key: string]: any } }): Promise<Response> => {
@@ -354,7 +378,7 @@ export default function DashboardAdmin() {
           }
         } else {
           const response = await sendSMS(filtered.map(receptor => receptor.phone), message);
-
+          console.log("Chamada SMS", response);
           //esperar resposta com 
         }
 

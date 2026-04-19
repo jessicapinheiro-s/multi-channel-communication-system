@@ -9,7 +9,7 @@ export const sendBySMS = async (req, res) => {
 
   try {
     const response = await f_send_by_sms(destination_number, message);
-    return res.status(200).json({ message: "" });
+    return res.status(200).json(response);
   } catch (error) {
     return res.status(500).json({ error: "" });
   }
