@@ -5,7 +5,6 @@
     "moduleResolution": "Node",
     "allowJs": true,
     "checkJs": true,
-    "baseUrl": "."
   },
   "include": ["src/**/*", "index.js"]
 }
