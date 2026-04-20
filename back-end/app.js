@@ -1,4 +1,4 @@
-import "express-async-errors"; 
+import "express-async-errors";
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -11,15 +11,20 @@ import send_by_email_router from "./src/routes/send-by-email/index.js";
 import cookieParser from "cookie-parser";
 import send_by_sms_router from "./src/routes/send-by-sms/index.js";
 import { errorMiddleware } from "./src/middlewares/error.js";
-
+import { globalLimiter } from "./src/middlewares/rate-limit.js";
 
 dotenv.config();
 const app = express();
 
-app.use(cors({
-  origin: ["http://localhost:5173", "https://multi-channel-communication-system-psi.vercel.app"],
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "https://multi-channel-communication-system-psi.vercel.app",
+    ],
+    credentials: true,
+  }),
+);
 
 app.use(express.json());
 app.use(cookieParser());
@@ -35,7 +40,8 @@ app.use("/recipients", router_recipient);
 app.use("/receptors", router_recipient);
 app.use("/emails", send_by_email_router);
 app.use("/sms", send_by_sms_router);
+app.use(globalLimiter);
 
-
-app.use(errorMiddleware)
+app.set("trust proxy", 1);
+app.use(errorMiddleware);
 export default app;
