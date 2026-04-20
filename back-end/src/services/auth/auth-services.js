@@ -60,7 +60,7 @@ export const f_create_user_auth = async ({
     throw new Error("User already exists");
   }
 
-  const user_created = await prisma.user.create({
+  return await prisma.user.create({
     data: {
       name: name,
       email: email,
@@ -70,18 +70,16 @@ export const f_create_user_auth = async ({
       warnings_preferences: user_preferences ?? "email",
     },
   });
-
-  return user_created;
 };
 
 export const f_get_current_user = async ({ id }) => {
-  if(!id){
-    throw new Error('Request param not found');
+  if (!id) {
+    throw new Error("Request param not found");
   }
 
-  const user = await prisma.user.findUnique({
+  return await prisma.user.findUnique({
     where: {
-      id: id
+      id: id,
     },
     select: {
       id: true,
@@ -89,9 +87,6 @@ export const f_get_current_user = async ({ id }) => {
       name: true,
       role: true,
       warnings_preferences: true,
-    }
-  })
-
-  return user;
-
+    },
+  });
 };

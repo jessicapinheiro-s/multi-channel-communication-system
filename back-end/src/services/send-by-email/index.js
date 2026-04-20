@@ -46,41 +46,44 @@ export const f_send_by_email = async (data) => {
     .replace("{{texto}}", message)
     .toString();
 
+  const body_to_send = {
+    sender: {
+      name: formatName(from_name) || "",
+      email: from_email,
+    },
+    to: [
+      {
+        email: to_email,
+        name: formatName(to_name) || "",
+      },
+    ],
+    subject: subject || "",
+    htmlContent: template_content,
+    textContent: message,
+  };
+
+  const response = await fetch(`${BREVO_URL}/email`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "api-key": BREVO_API_KEY,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body_to_send),
+  });
+
+  let dataRes;
+
   try {
-    const body_to_send = {
-      sender: {
-        name: formatName(from_name) || '',
-        email: from_email,
-      },
-      to: [
-        {
-          email: to_email,
-          name: formatName(to_name) || '',
-        },
-      ],
-      subject: subject || '',
-      htmlContent: template_content,
-      textContent: message,
-    };
-
-    const response = await fetch(`${BREVO_URL}/email`, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "api-key": BREVO_API_KEY,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body_to_send),
-    });
-
-    if (!response.ok) {
-      const text = await response.text();
-      throw new Error(`Erro ao tentar enviar o e-mail: ${response.status} ${text}`);
-    }
-
-    const json = await response.json();
-    return json;
-  } catch (error) {
-    throw new Error(`Erro ao tentar enviar o e-mail: ${error.message || error}`);
+    dataRes = await response.json();
+  } catch {
+    throw new Error("Invalid response from email service");
   }
+
+  if (!response.ok) {
+    throw new Error(
+      dataRes?.requestError?.serviceException?.text || "Failed to send Email",
+    );
+  }
+  return dataRes;
 };

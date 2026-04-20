@@ -1,3 +1,4 @@
+import "express-async-errors"; 
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -9,6 +10,8 @@ import router_recipient from "./src/routes/recipient/index.js";
 import send_by_email_router from "./src/routes/send-by-email/index.js";
 import cookieParser from "cookie-parser";
 import send_by_sms_router from "./src/routes/send-by-sms/index.js";
+import { errorMiddleware } from "./src/middlewares/error.js";
+
 
 dotenv.config();
 const app = express();
@@ -33,4 +36,6 @@ app.use("/receptors", router_recipient);
 app.use("/emails", send_by_email_router);
 app.use("/sms", send_by_sms_router);
 
+
+app.use(errorMiddleware)
 export default app;

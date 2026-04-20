@@ -26,11 +26,9 @@ export const f_create_recipient = async ({ name, email, phone, preferences }) =>
     preferences: preferences || null,
   });
 
-  const recipient = await prisma.recipient.create({ data: createData });
-  return recipient;
+  return await prisma.recipient.create({ data: createData });
 };
 
 export const f_get_all_recipients = async () => {
-  const recipients = await prisma.recipient.findMany();
-  return recipients;
+  return await prisma.recipient.findMany();
 };
