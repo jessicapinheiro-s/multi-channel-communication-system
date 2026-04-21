@@ -24,3 +24,9 @@ export const deleteWarningSchema = z.object({
 export const getByIdWarningSchema = z.object({
     id: z.number()
 })
+
+
+export const sendWarningSchema = z.object({
+  id: z.number("Warning id is missing")
+})
+

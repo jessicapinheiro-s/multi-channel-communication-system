@@ -3,6 +3,7 @@ import {
   f_delete_warning,
   f_get_all_warnings,
   f_get_by_id_warning,
+  f_send_warning,
   f_update_warning,
 } from "../../services/warnings/index.js";
 import { successResponse } from "../../utils/apiResponse.js";
@@ -52,3 +53,9 @@ export const get_all_warnings = async (req, res) => {
   const response = await f_get_all_warnings();
   return successResponse(res, response);
 };
+
+export const send_warning = async (req, res) => {
+  const {id} = req.body;
+  const response = await f_send_warning(id);
+  return successResponse(res, response);
+}
