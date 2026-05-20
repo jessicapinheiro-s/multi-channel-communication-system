@@ -1,6 +1,6 @@
-import prisma from "../config/prisma";
-import { emailQueue } from "../queues/email.queue";
-import { f_send_by_email } from "../services/send-by-email";
+import prisma from "../config/prisma.js";
+import { emailQueue } from "../queues/email.queue.js";
+import { f_send_by_email } from "../services/send-by-email/index.js";
 
 emailQueue.process(5, async (job) => {
   const {

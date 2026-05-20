@@ -8,15 +8,54 @@ export default function LoadingModal({ open, message = "Loading..." }: LoadingMo
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
-            <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" aria-hidden="true" />
+            {/* Backdrop */}
+            <div
+                className="absolute inset-0 bg-black/70 backdrop-blur-md"
+                aria-hidden="true"
+            />
 
+            {/* Modal */}
             <div
                 role="dialog"
                 aria-modal="true"
-                className="relative bg-white text-white rounded-lg p-6 flex flex-col items-center gap-4 w-11/12 max-w-sm shadow-lg"
+                className="
+      relative overflow-hidden
+      w-11/12 max-w-sm
+      rounded-3xl
+      border border-white/10
+      bg-slate-900/90
+      backdrop-blur-2xl
+      p-8
+      flex flex-col items-center gap-5
+      shadow-2xl shadow-cyan-500/10
+    "
             >
-                <div className="w-12 h-12 border-2 border-white/20 border-t-gray-500 rounded-full animate-spin" />
-                <p className="text-center text-sm">{message}</p>
+                {/* Glow */}
+                <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-400/10 blur-3xl rounded-full" />
+
+                {/* Spinner */}
+                <div
+                    className="
+        relative z-10
+        w-14 h-14
+        rounded-full
+        border-[3px]
+        border-white/10
+        border-t-cyan-400
+        animate-spin
+      "
+                />
+
+                {/* Message */}
+                <div className="relative z-10 text-center">
+                    <h2 className="text-lg font-semibold text-white">
+                        Processing
+                    </h2>
+
+                    <p className="text-sm text-slate-400 mt-2">
+                        {message}
+                    </p>
+                </div>
             </div>
         </div>
     );

@@ -56,7 +56,8 @@ export default function DashboardAdmin() {
   } = useQuery({
     queryKey: ['data', 'campanhas'],
     queryFn: async () => {
-      return await fetchCampaigns()
+      const data = await fetchCampaigns();
+      return data.data;
     },
     retry: 2,
     enabled: selectedMenu === 'campanhas',
@@ -68,7 +69,9 @@ export default function DashboardAdmin() {
   } = useQuery({
     queryKey: ['data', 'receptores'],
     queryFn: async () => {
-      return await fetchReceptors()
+
+      const data = await fetchReceptors();
+      return data.data;
     },
     retry: 2,
     enabled: selectedMenu === 'receptores',
@@ -81,7 +84,8 @@ export default function DashboardAdmin() {
   } = useQuery({
     queryKey: ['data', 'mensagens'],
     queryFn: async () => {
-      return await fetchMessages()
+      const data = await fetchMessages();
+      return data.data;
     },
     retry: 2,
     enabled: selectedMenu === 'mensagens',
@@ -91,7 +95,7 @@ export default function DashboardAdmin() {
   const {
     data: totalCampaigns
   } = useQuery({
-    queryKey: ['total_warnings'],
+    queryKey: ['data', 'total_warnings'],
     queryFn: async () => {
       return await getTotalWarnings();
     }
@@ -100,7 +104,7 @@ export default function DashboardAdmin() {
   const {
     data: smsCampaigns
   } = useQuery({
-    queryKey: ['total_warnings_meessages'],
+    queryKey: ['data', 'total_warnings_meessages'],
     queryFn: async () => {
       return await getTotalMessages();
     }
@@ -427,7 +431,7 @@ export default function DashboardAdmin() {
   }
 
   const campaigns = useMemo(() => {
-    let data = data_campaigns ? [...data_campaigns] : [];
+    let data = Array.isArray(data_campaigns) ? [...data_campaigns] : [];
 
     // filtro por status
     if (status === 'created') {
@@ -480,88 +484,39 @@ export default function DashboardAdmin() {
 
 
   return (
-    <main className="flex flex-row min-h-screen bg-gray-50">
-      <Header
-        companyName="NINE"
-        onLogout={handleLogout}
-      />
-
-      <section className="w-full flex flex-col gap-6 py-10 px-10">
-        {/* Cabeçalho da página */}
-        <div className="flex flex-col md:flex-row items-start justify-between gap-4">
+    <main className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white flex">
+      {/* Sidebar */}
+      <aside className="hidden lg:flex w-72 border-r border-white/10 bg-white/[0.03] backdrop-blur-xl px-6 py-8 flex-col justify-between">
+        <div className="flex flex-col gap-10">
           <div>
-            <h1 className="text-2xl font-bold text-gray-800">
-              Campaigns Dashboard
+            <h1 className="text-3xl font-black tracking-tight bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+              NINE
             </h1>
-            <p className="text-sm text-gray-500">
-              Overview and management of your campaigns
+
+            <p className="text-sm text-slate-400 mt-2">
+              Campaign Management Platform
             </p>
           </div>
 
-          <>
-            <button
-              className="
-              bg-[#4FD1C5] hover:bg-[#4fd1c4c2]
-              text-white font-semibold
-              px-5 py-2 rounded-lg
-              transition-colors
-            "
-              onClick={() => setIsMessageModalOpen(true)}
-            >
-              Create a Campaign
-            </button>
-          </>
-        </div>
-
-        {/* Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <Card title="Total Campaigns" iconHeader={Megaphone} iconColor="bg-gray-100 text-gray-900">
-            <div className="flex items-center justify-between">
-              <p className="text-4xl font-bold text-gray-900">
-                {totalCampaigns || 0}
-              </p>
-
-            </div>
-          </Card>
-
-          <Card title="SMS Campaigns" iconHeader={Smartphone} iconColor="bg-green-100 text-green-600">
-            <p className="text-4xl font-bold text-green-600">
-              {smsCampaigns || 0}
-            </p>
-          </Card>
-
-          <Card title="Email Campaigns" iconHeader={Mail} iconColor="bg-indigo-100 text-indigo-600">
-            <p className="text-4xl font-bold text-indigo-600">
-              {emailCampaigns || 0}
-            </p>
-          </Card>
-
-          <Card title="Total Receptors" iconHeader={User} iconColor="bg-red-100 text-red-600">
-            <p className="text-4xl font-bold text-red-600">
-              {totalReceptors || 0}
-            </p>
-          </Card>
-        </div>
-
-        {/* Menu de seleção */}
-        <div className="w-full">
-          <div className="flex flex-row bg-white rounded-lg shadow-sm w-full">
+          <div className="flex flex-col gap-2">
             {menus_selecao.map((menu) => {
               const active = selectedMenu === menu;
+
               return (
                 <button
                   key={menu}
                   onClick={() => setSelectedMenu(menu)}
-                  type="button"
                   className={`
-  w-full px-5 py-2 rounded-lg text-sm font-semibold
-  transition-all
-  ${active
-                      ? 'bg-teal-400 text-white shadow-sm'
-                      : 'text-gray-500 hover:bg-gray-100'}
-`}
-                // accessibility: visual focus styles are provided; aria-pressed removed to satisfy linter
+                  w-full flex items-center gap-3
+                  px-4 py-3 rounded-2xl
+                  transition-all duration-300
+                  ${active
+                      ? "bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg shadow-cyan-500/20"
+                      : "hover:bg-white/5 text-slate-400"
+                    }
+                `}
                 >
+                  <div className="w-2 h-2 rounded-full bg-current" />
                   {dictionaty[menu]}
                 </button>
               );
@@ -569,370 +524,338 @@ export default function DashboardAdmin() {
           </div>
         </div>
 
-        {/*Filter*/}
-        {
-          selectedMenu !== "receptores" && (
-            <div className="w-full  flex justify-end">
-
-              <div className="w-full md:w-6/12 flex items-end justify-end gap-6">
-                {/* Status */}
-                <div className="w-full flex flex-col gap-1 md:min-w-[180px]">
-                  <label
-                    htmlFor="status"
-                    className="text-xs font-medium text-gray-500"
-                  >
-                    Campaign Status
-                  </label>
-
-                  <select
-                    id="status"
-                    name="status"
-                    value={status}
-                    onChange={(e) => setFilterStatus(e.target.value)}
-                    className="
-                      w-full
-                      rounded-lg
-                      border border-gray-300
-                      bg-white
-                      px-4 py-2
-                      text-sm text-gray-700
-                      shadow-sm
-                      focus:outline-none
-                      focus:ring-2 focus:ring-teal-400
-                      focus:border-teal-400
-                      transition
-                    "
-                  >
-                    {status_campaigns?.map((campaign) => (
-                      <option key={campaign} value={campaign}>
-                        {campaign.charAt(0).toUpperCase() + campaign.slice(1)}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Ordenação */}
-                <div className="w-full flex flex-col gap-1 min-w-[180px]">
-                  <label
-                    htmlFor="ordenacao"
-                    className="text-xs font-medium text-gray-500"
-                  >
-                    Order By
-                  </label>
-
-                  <select
-                    id="ordenacao"
-                    name="ordenacao"
-                    value={ordenacao}
-                    onChange={(e) => setOrdenacao(e.target.value)}
-                    className="
-          w-full
-          rounded-lg
-          border border-gray-300
-          bg-white
-          px-4 py-2
-          text-sm text-gray-700
-          shadow-sm
-          focus:outline-none
-          focus:ring-2 focus:ring-teal-400
-          focus:border-teal-400
-          transition
+        <button
+          onClick={handleLogout}
+          className="
+          w-full py-3 rounded-2xl
+          border border-red-500/20
+          bg-red-500/10
+          text-red-400
+          hover:bg-red-500/20
+          transition-all
         "
-                  >
-                    {["descending", "ascending"].map((ord) => (
-                      <option key={ord} value={ord}>
-                        {ord.charAt(0).toUpperCase() + ord.slice(1)}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+        >
+          Logout
+        </button>
+      </aside>
 
+      {/* Content */}
+      <section className="flex-1 px-6 md:px-10 py-8 overflow-auto">
+        {/* Header */}
+        <div className="flex flex-col xl:flex-row items-start xl:items-center justify-between gap-6 mb-10">
+          <div>
+            <h1 className="text-5xl font-black tracking-tight">
+              Campaign Dashboard
+            </h1>
+
+            <p className="text-slate-400 mt-3 max-w-2xl">
+              Manage multichannel campaigns, recipients and communication logs in
+              real time.
+            </p>
+          </div>
+
+          <button
+            onClick={() => setIsMessageModalOpen(true)}
+            className="
+            px-7 py-4 rounded-2xl
+            bg-gradient-to-r from-cyan-500 to-blue-500
+            hover:scale-[1.02]
+            transition-all duration-300
+            font-semibold
+            shadow-lg shadow-cyan-500/20
+          "
+          >
+            Create Campaign
+          </button>
+        </div>
+
+        {/* Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-10">
+          {[
+            {
+              title: "Total Campaigns",
+              value: totalCampaigns || 0,
+              growth: "+12%",
+            },
+            {
+              title: "SMS Campaigns",
+              value: smsCampaigns || 0,
+              growth: "+8%",
+            },
+            {
+              title: "Email Campaigns",
+              value: emailCampaigns || 0,
+              growth: "+23%",
+            },
+            {
+              title: "Recipients",
+              value: totalReceptors || 0,
+              growth: "+31%",
+            },
+          ].map((card) => (
+            <div
+              key={card.title}
+              className="
+              relative overflow-hidden
+              rounded-3xl
+              border border-white/10
+              bg-white/[0.03]
+              backdrop-blur-xl
+              p-6
+              shadow-2xl
+            "
+            >
+              <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-400/10 blur-3xl rounded-full" />
+
+              <div className="relative z-10">
+                <span className="text-sm text-slate-400">
+                  {card.title}
+                </span>
+
+                <div className="flex items-end justify-between mt-4">
+                  <h2 className="text-5xl font-black tracking-tight">
+                    {card.value}
+                  </h2>
+
+                  <span className="text-emerald-400 text-sm font-semibold">
+                    {card.growth}
+                  </span>
+                </div>
               </div>
             </div>
+          ))}
+        </div>
 
-          )
-        }
+        {/* Filters */}
+        {selectedMenu !== "receptores" && (
+          <div className="flex flex-col xl:flex-row items-start xl:items-center justify-between gap-4 mb-10">
+            <div className="flex items-center gap-3 overflow-auto">
+              {menus_selecao.map((menu) => {
+                const active = selectedMenu === menu;
 
-        {/**Content */}
-        <div className="w-full flex flex-col gap-6">
-          {
-            selectedMenu === 'campanhas' ? (
-              <div className="w-full flex flex-col gap-4">
-                {
-                  campaigns.length > 0 ? (
-                    (campaigns)?.map((campaigns: Warning) => (
-                      <Card key={campaigns.id} title="">
-                        <div className="flex items-start justify-between gap-4">
-                          {/* Conteúdo */}
-                          <div className="space-y-3">
-                            {/* Nome */}
-                            <h3 className="text-lg font-semibold text-gray-800">
-                              {campaigns.name.charAt(0).toUpperCase() + campaigns.name.slice(1)}
-                            </h3>
-
-                            {/* Metadados */}
-                            <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
-                              <span>
-                                <strong>Status:</strong>{" "}
-                                <span
-                                  className={`
-              inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium
-              ${campaigns.status === "ativo"
-                                      ? "bg-green-100 text-green-700"
-                                      : "bg-gray-200 text-gray-600"
-                                    }
-            `}
-                                >
-                                  {campaigns.status.charAt(0).toUpperCase() + campaigns.status.slice(1)}
-                                </span>
-                              </span>
-
-                              <span>
-                                <strong>Created At:</strong>{" "}
-                                {campaigns.created_at
-                                  ? new Date(campaigns.created_at).toLocaleDateString("pt-BR")
-                                  : "-"}
-                              </span>
-
-                              <span>
-                                <strong>Channel:</strong> {campaigns.channel}
-                              </span>
-                            </div>
-
-                            {/* Mensagem */}
-                            <p className="text-sm text-gray-600 leading-relaxed max-w-md">
-                              {campaigns.message.length > 100
-                                ? `${campaigns.message.slice(0, 100)}...`
-                                : campaigns.message}
-                            </p>
-                          </div>
-
-                          {/* Ação */}
-                          <button
-                            type="button"
-                            onClick={() =>
-                              handleSendMessages(
-                                campaigns.id,
-                                campaigns.channel,
-                                campaigns.message
-                              )
-                            }
-                            className="
-                              flex items-center justify-center
-                              w-10 h-10
-                              rounded-full
-                              bg-teal-400
-                              text-white
-                              hover:bg-teal-500
-                              transition-all
-                              shadow-sm
-                            "
-                            aria-label="Iniciar campanha"
-                          >
-                            <Send className="w-5 h-5" />
-                          </button>
-                        </div>
-                      </Card>
-
-                    ))
-                  ) : (
-                    <div className="flex flex-col items-center gap-2 text-gray-500">
-                      <Megaphone size={32} />
-                      <p className="font-semibold">No campaigns yet</p>
-                      <p className="text-sm">Create your first campaign to get started</p>
-                    </div>
-                  )
-                }
-              </div>
-            ) : selectedMenu === "mensagens" ? (
-              <div>
-                {
-                  messages.length > 0 ? (
-                    <div className="w-full flex flex-col gap-4">
-                      {
-                        messages?.map((message: WarningLogSent) => (
-                          <Card key={message.id} title="">
-                            <div className="flex items-start justify-between gap-4">
-                              {/* Conteúdo */}
-                              <div className="space-y-3">
-                                {/* Usuário */}
-                                <h3 className="text-lg font-semibold text-gray-800">
-                                  {message.user?.name ?? `Usuário #${message.user_id}`}
-                                </h3>
-
-                                {/* Metadados principais */}
-                                <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
-                                  <span>
-                                    <strong>ID:</strong> {message.id}
-                                  </span>
-
-                                  <span>
-                                    <strong>Warning ID:</strong> {message.warningId}
-                                  </span>
-
-                                  <span>
-                                    <strong>User ID:</strong> {message.user_id}
-                                  </span>
-                                </div>
-
-                                {/* Datas */}
-                                <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
-                                  <span>
-                                    <strong>Created At:</strong>{" "}
-                                    {message.created_at
-                                      ? new Date(message.created_at).toLocaleString("pt-BR")
-                                      : "-"}
-                                  </span>
-
-                                  <span>
-                                    <strong>Sent At:</strong>{" "}
-                                    {message.sent_at
-                                      ? new Date(message.sent_at).toLocaleString("pt-BR")
-                                      : "Não enviado"}
-                                  </span>
-                                </div>
-
-                                {/* Canal */}
-                                <div className="flex flex-row items-center justify-start gap-4">
-                                  <div className="flex items-center gap-2 text-sm">
-                                    <strong className="text-gray-600">Channel:</strong>
-                                    <span
-                                      className="
-                                    inline-flex items-center px-2 py-0.5 rounded-full
-                                    text-xs font-medium
-                                    bg-blue-100 text-blue-700
-                                  "
-                                    >
-                                      {formatName(message.channel)}
-                                    </span>
-                                  </div>
-                                  <div className="flex items-center gap-2 text-sm">
-                                    <strong className="text-gray-600">Status:</strong>
-                                    <span
-                                      className="
-                                      inline-flex items-center px-2 py-0.5 rounded-full
-                                      text-xs font-medium
-                                      bg-green-100 text-green-700
-                                    "
-                                    >
-                                      {formatName(message.status)}
-                                    </span>
-                                  </div>
-                                </div>
-
-                                {/* Warning associada */}
-                                {message.warning && (
-                                  <p className="text-sm text-gray-600 leading-relaxed max-w-md">
-                                    <strong>Warning:</strong>{" "}
-                                    {message.warning.message.length > 100
-                                      ? `${message.warning.message.slice(0, 100)}...`
-                                      : message.warning.message}
-                                  </p>
-                                )}
-                              </div>
-
-                              {/* Ação */}
-                              <button
-                                type="button"
-                                onClick={() => setIsMessageModalOpen(true)}
-                                className="
-                                  flex items-center justify-center
-                                  w-10 h-10
-                                  rounded-full
-                                  bg-teal-400
-                                  text-white
-                                  hover:bg-teal-500
-                                  transition-all
-                                  shadow-sm
-                                "
-                                aria-label="Visualizar mensagem"
-                              >
-                                <Send className="w-5 h-5" />
-                              </button>
-                            </div>
-                          </Card>
-
-
-                        ))
+                return (
+                  <button
+                    key={menu}
+                    onClick={() => setSelectedMenu(menu)}
+                    className={`
+                    px-5 py-3 rounded-2xl
+                    whitespace-nowrap
+                    transition-all
+                    ${active
+                        ? "bg-cyan-500 text-white"
+                        : "bg-white/5 border border-white/10 text-slate-400 hover:bg-white/10"
                       }
+                  `}
+                  >
+                    {dictionaty[menu]}
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="flex flex-col md:flex-row items-center gap-4 w-full xl:w-auto">
+              <select
+                value={status}
+                onChange={(e) => setFilterStatus(e.target.value)}
+                className="
+                bg-white/5
+                border border-white/10
+                rounded-2xl
+                px-4 py-3
+                text-sm text-slate-300
+                outline-none
+              "
+              >
+                {status_campaigns.map((campaign) => (
+                  <option
+                    key={campaign}
+                    value={campaign}
+                    className="bg-slate-900"
+                  >
+                    {campaign}
+                  </option>
+                ))}
+              </select>
+
+              <select
+                value={ordenacao}
+                onChange={(e) => setOrdenacao(e.target.value)}
+                className="
+                bg-white/5
+                border border-white/10
+                rounded-2xl
+                px-4 py-3
+                text-sm text-slate-300
+                outline-none
+              "
+              >
+                {["descending", "ascending"].map((ord) => (
+                  <option
+                    key={ord}
+                    value={ord}
+                    className="bg-slate-900"
+                  >
+                    {ord}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        )}
+
+        {/* Content */}
+        <div className="flex flex-col gap-6">
+          {selectedMenu === "campanhas" ? (
+            campaigns.length > 0 ? (
+              campaigns.map((campaigns: Warning) => (
+                <div
+                  key={campaigns.id}
+                  className="
+                  group relative overflow-hidden
+                  rounded-3xl
+                  border border-white/10
+                  bg-white/[0.03]
+                  backdrop-blur-xl
+                  p-7
+                  hover:bg-white/[0.05]
+                  transition-all duration-300
+                  hover:scale-[1.01]
+                "
+                >
+                  <div className="absolute top-0 right-0 w-40 h-40 bg-blue-500/10 blur-3xl rounded-full" />
+
+                  <div className="relative z-10 flex items-start justify-between gap-6">
+                    <div className="flex flex-col gap-5">
+                      <div>
+                        <div className="flex items-center gap-3 mb-3">
+                          <span
+                            className={`
+                            px-3 py-1 rounded-full text-xs font-semibold border
+                            ${campaigns.status === "ativo"
+                                ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                                : "bg-slate-500/10 text-slate-400 border-slate-500/20"
+                              }
+                          `}
+                          >
+                            {campaigns.status}
+                          </span>
+
+                          <span className="text-xs text-slate-500 uppercase tracking-wider">
+                            {campaigns.channel}
+                          </span>
+                        </div>
+
+                        <h2 className="text-3xl font-bold tracking-tight">
+                          {campaigns.name}
+                        </h2>
+                      </div>
+
+                      <p className="text-slate-400 max-w-2xl leading-relaxed">
+                        {campaigns.message.length > 160
+                          ? `${campaigns.message.slice(0, 160)}...`
+                          : campaigns.message}
+                      </p>
+
+                      <div className="flex flex-wrap items-center gap-6 text-sm text-slate-500">
+                        <span>
+                          Created at{" "}
+                          {campaigns.created_at
+                            ? new Date(
+                              campaigns.created_at
+                            ).toLocaleDateString("pt-BR")
+                            : "-"}
+                        </span>
+                      </div>
                     </div>
-                  ) : (
-                    <div className="flex flex-col items-center gap-2 text-gray-500">
-                      <Smartphone size={32} />
-                      <p className="font-semibold">There is no messages sent</p>
-                      <p className="text-sm">Create a campaign first to send messages</p>
-                    </div>
-                  )
-                }
-              </div>
+
+                    <button
+                      onClick={() =>
+                        handleSendMessages(
+                          campaigns.id,
+                          campaigns.channel,
+                          campaigns.message
+                        )
+                      }
+                      className="
+                      opacity-0
+                      group-hover:opacity-100
+                      translate-y-2
+                      group-hover:translate-y-0
+                      transition-all duration-300
+
+                      min-w-14 h-14
+                      rounded-2xl
+                      bg-gradient-to-r from-cyan-500 to-blue-500
+                      shadow-lg shadow-cyan-500/30
+                      flex items-center justify-center
+                    "
+                    >
+                      <Send className="w-5 h-5" />
+                    </button>
+                  </div>
+                </div>
+              ))
             ) : (
-              <div>
+              <div
+                className="
+                rounded-3xl
+                border border-dashed border-white/10
+                bg-white/[0.02]
+                py-24
+                flex flex-col items-center justify-center text-center
+              "
+              >
+                <div className="w-24 h-24 rounded-3xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center mb-6">
+                  <Megaphone className="w-10 h-10 text-cyan-400" />
+                </div>
 
-                {
-                  (receptors || [])?.length > 0 ? (
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Name</TableHead>
-                          <TableHead>Email</TableHead>
-                          <TableHead>Phone Number</TableHead>
-                          <TableHead>Notification Preference</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {
-                          receptors?.map((message: Receptor) => (
-                            <TableRow key={message.id}>
-                              <TableCell>{formatName(message.name)}</TableCell>
-                              <TableCell>{message.email}</TableCell>
-                              <TableCell>{formatPhoneNumber(message.phone)}</TableCell>
-                              <TableCell>{message.preferences}</TableCell>
-                            </TableRow>
+                <h2 className="text-3xl font-bold">
+                  No campaigns created
+                </h2>
 
-                          ))
-                        }
-                      </TableBody>
-                    </Table>
-                  ) : (
-                    <div className="flex flex-col items-center gap-2 text-gray-500">
-                      <User size={32} />
-                      <p className="font-semibold">There is no receptors registered</p>
-                      <p className="text-sm">Receptors need to be registered to receive the notifications</p>
-                    </div>
-                  )
-                }
+                <p className="text-slate-400 mt-3 max-w-md">
+                  Create your first multichannel campaign to start engaging your audience.
+                </p>
               </div>
             )
-          }
+          ) : null}
         </div>
+
+        <LoadingModal
+          open={isLoanding}
+          message="Creating campaign..."
+        />
+
+        <MessageFormModal
+          open={isMessageModalOpen}
+          initialValue={campaign_info}
+          title="Create a new Campaign"
+          submitLabel="Create"
+          onClose={() => setIsMessageModalOpen(false)}
+          onSubmit={(value) => {
+            setCampaignInfo(value);
+            setIsMessageModalOpen(false);
+
+            handleIniciarCampanha({
+              message: value.message,
+              channel: value.channel,
+              name: value.name,
+            });
+          }}
+        />
+
+        <Toast
+          open={toastOpen}
+          duration={toastInfo.duration}
+          message={toastInfo.message}
+          title={toastInfo.title}
+          type={toastInfo.type}
+          onClose={() => setToastOpen(false)}
+        />
       </section>
-
-      <LoadingModal open={isLoanding} message="Creating campaign..." />
-
-      <MessageFormModal
-        open={isMessageModalOpen}
-        initialValue={campaign_info}
-        title="Create a new Campaign"
-        submitLabel="Create"
-        onClose={() => setIsMessageModalOpen(false)}
-        onSubmit={(value) => {
-          setCampaignInfo(value);
-          setIsMessageModalOpen(false);
-          // call passing the new campaign data
-          handleIniciarCampanha({ message: value.message, channel: value.channel, name: value.name });
-        }}
-      />
-
-      <Toast
-        open={toastOpen}
-        duration={toastInfo.duration}
-        message={toastInfo.message}
-        title={toastInfo.title}
-        type={toastInfo.type}
-        onClose={() => setToastOpen(false)}
-      />
     </main>
   )
+
 }
 
 

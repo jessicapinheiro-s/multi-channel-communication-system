@@ -9,7 +9,7 @@ export const getTotalWarnings = async () => {
       credentials: "include",
     });
     const total = await response.json();
-    return total.length;
+    return total?.data.length || 0;
   } catch (error) {
     throw error;
   }
@@ -22,7 +22,7 @@ export const getTotalReceptors = async () => {
       credentials: "include",
     });
     const total = await response.json();
-    return total.length;
+    return total?.data?.length || 0;
   } catch (error) {
     throw error;
   }
@@ -35,7 +35,7 @@ export const getTotalMessages = async () => {
       credentials: "include",
     });
     const total = await response.json();
-    return total.length;
+    return total?.data?.length || 0;
   } catch (error) {
     throw error;
   }
@@ -48,7 +48,7 @@ export const getTotalWarningLogs = async () => {
       credentials: "include",
     });
     const total = await response.json();
-    return total.length;
+    return total?.data?.length || 0;
   } catch (error) {
     throw error;
   }
@@ -61,34 +61,35 @@ export const getTotalEmails = async () => {
       credentials: "include",
     });
     const total = await response.json();
-    return total.length;
+    return total?.data?.length || 0;
   } catch (error) {
     throw error;
   }
 };
 
-export const fetchCampaigns = async (): Promise<Warning[]> => {
+export const fetchCampaigns = async (): Promise<{sucess: boolean, data: Warning[]}> => {
   const response = await fetch(`${ambiente}/warnings/get-all`, {
     method: "GET",
     credentials: "include",
   });
-  return response.json();
+  return await response.json();
 };
 
-export const fetchReceptors = async (): Promise<Receptor[]> => {
+export const fetchReceptors = async (): Promise<{sucess: boolean, data: Receptor[]}> => {
   const response = await fetch(`${ambiente}/recipients/get-all`, {
     method: "GET",
     credentials: "include",
   });
-  return response.json();
+  return await response.json();
 };
 
 export const fetchMessages = async (
   
-): Promise<WarningLogSent[]> => {
+): Promise<{sucess: boolean, data: WarningLogSent[]}> => {
   const response = await fetch(`${ambiente}/warnings_logs/get-all`, {
     method: "GET",
     credentials: "include",
   });
-  return response.json();
+
+  return await response.json();
 };

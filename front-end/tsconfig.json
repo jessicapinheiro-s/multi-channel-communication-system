@@ -4,7 +4,8 @@
     "baseUrl": "./src",
     "paths": {
       "@/*": ["*"]
-    }
+    },
+    "ignoreDeprecations": "6.0"
   },
   "files": [],
   "references": [

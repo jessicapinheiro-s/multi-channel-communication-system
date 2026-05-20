@@ -1,13 +1,41 @@
 #root {
-    width: 100%;
-    height: 100vh; 
-    font-family: 'Roboto', sans-serif;
-    font-size: 16px;
+  width: 100%;
+  height: 100vh;
+  font-family: "Roboto", sans-serif;
+  font-size: 16px;
+  background-color: 
 }
+/* No seu arquivo CSS global */
 
 h1 {
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: #FFFFFF;
-    margin-bottom: 0.5rem;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+}
+/* No final do seu App.css */
+
+/* No final do seu App.css */
+
+/* Alvo para todos os inputs quando o navegador meter o Autofill */
+/* No final do seu App.css */
+
+/* No final do seu App.css */
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active {
+  /* 1. Mantém o texto sempre branco */
+  -webkit-text-fill-color: #ffffff !important;
+  
+  /* 2. Em vez de transparent, injetamos uma sombra com a cor resultante */
+  /* #131b2e é o equivalente visual de um fundo #0f172a com 3% de branco por cima */
+  box-shadow: 0 0 0px 1000px #131b2e inset !important;
+  -webkit-box-shadow: 0 0 0px 1000px #131b2e inset !important;
+  
+  /* 3. Mantém os resets de tamanho para não quebrar os cantos arredondados da div */
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
 }

@@ -39,36 +39,87 @@ export default function Toast({
       <div
         role="status"
         aria-live="polite"
-        className={`${bg} ${border} ${text} border rounded-lg shadow-lg max-w-sm w-80 p-4 flex gap-3 items-start`}
+        className={`
+      relative overflow-hidden
+      w-[380px]
+      rounded-3xl
+      border border-white/10
+      bg-slate-900/90
+      backdrop-blur-2xl
+      shadow-2xl
+      p-5
+      flex gap-4 items-start
+      animate-in slide-in-from-bottom-5 fade-in duration-300
+    `}
       >
-        <div className="flex-shrink-0">
+        {/* Glow */}
+        <div
+          className={`
+        absolute top-0 right-0 w-32 h-32 blur-3xl rounded-full
+        ${isSuccess
+              ? "bg-emerald-400/10"
+              : "bg-red-400/10"
+            }
+      `}
+        />
+
+        {/* Icon */}
+        <div className="relative z-10 flex-shrink-0">
           <div
-            className={`w-8 h-8 rounded-full flex items-center justify-center ${
-              isSuccess ? "bg-green-100" : "bg-red-100"
-            }`}
+            className={`
+          w-12 h-12 rounded-2xl
+          flex items-center justify-center
+          border
+          ${isSuccess
+                ? "bg-emerald-500/10 border-emerald-500/20"
+                : "bg-red-500/10 border-red-500/20"
+              }
+        `}
           >
             {isSuccess ? (
-              <Check className="h-5 w-5 text-green-600" strokeWidth={2.5} />
+              <Check
+                className="h-6 w-6 text-emerald-400"
+                strokeWidth={2.5}
+              />
             ) : (
-              <X className="h-5 w-5 text-red-600" strokeWidth={2.5} />
+              <X
+                className="h-6 w-6 text-red-400"
+                strokeWidth={2.5}
+              />
             )}
           </div>
         </div>
 
-        <div className="flex-1 min-w-0">
-          {title && <div className="font-semibold">{title}</div>}
-          {message && <div className="text-sm mt-1">{message}</div>}
+        {/* Content */}
+        <div className="relative z-10 flex-1 min-w-0">
+          {title && (
+            <h3 className="text-white font-semibold text-base">
+              {title}
+            </h3>
+          )}
+
+          {message && (
+            <p className="text-sm text-slate-400 mt-1 leading-relaxed">
+              {message}
+            </p>
+          )}
         </div>
 
+        {/* Close */}
         <button
           onClick={() => onClose && onClose()}
-          aria-label="Fechar alerta"
-          className="ml-2 opacity-70 hover:opacity-100"
+          aria-label="Close alert"
+          className="
+        relative z-10
+        opacity-60 hover:opacity-100
+        transition-all
+        rounded-xl
+        p-1
+        hover:bg-white/5
+      "
         >
           <X
-            className={`h-5 w-5 ${
-              isSuccess ? "text-green-700" : "text-red-700"
-            }`}
+            className="h-5 w-5 text-slate-400"
             strokeWidth={2.5}
           />
         </button>
