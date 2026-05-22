@@ -140,10 +140,9 @@ export default function FormRegisterLogin({
                 px-4 py-3
                 transition-all
                 bg-white/[0.03]
-                ${
-                  focusField === "name"
-                    ? "border-cyan-400 ring-2 ring-cyan-400/20"
-                    : "border-white/10"
+                ${focusField === "name"
+                  ? "border-cyan-400 ring-2 ring-cyan-400/20"
+                  : "border-white/10"
                 }
               `}
             >
@@ -152,17 +151,15 @@ export default function FormRegisterLogin({
               <input
                 {...register("name")}
                 type="text"
-                placeholder="Jessica Silva"
+                placeholder="Your Name"
                 aria-label="name"
                 onFocus={() => setFocusField("name")}
                 onBlur={() => setFocusField("")}
                 className="
-                  w-full 
+                 w-full bg-transparent
                   outline-none
                   text-white
                   placeholder:text-slate-500
-                  autofill:bg-gray-50
-                    autofill:shadow-[inset_0_0_0px_1000px_rgb(249,250,251)]
                 "
               />
             </div>
@@ -188,10 +185,9 @@ export default function FormRegisterLogin({
                 px-4 py-3
                 transition-all
                 bg-white/[0.03]
-                ${
-                  focusField === "phone"
-                    ? "border-cyan-400 ring-2 ring-cyan-400/20"
-                    : "border-white/10"
+                ${focusField === "phone"
+                  ? "border-cyan-400 ring-2 ring-cyan-400/20"
+                  : "border-white/10"
                 }
               `}
             >
@@ -242,10 +238,9 @@ export default function FormRegisterLogin({
                 px-4 py-3
                 transition-all
                 bg-white/[0.03]
-                ${
-                  focusField === "preferences"
-                    ? "border-cyan-400 ring-2 ring-cyan-400/20"
-                    : "border-white/10"
+                ${focusField === "preferences"
+                  ? "border-cyan-400 ring-2 ring-cyan-400/20"
+                  : "border-white/10"
                 }
               `}
             >
@@ -284,11 +279,10 @@ export default function FormRegisterLogin({
                 px-4 py-3
                 transition-all
                 bg-white/[0.03]
-                ${
-                  focusField === "preferences"
-                    ? "border-cyan-400 ring-2 ring-cyan-400/20"
-                    : "border-white/10"
-                }
+                ${focusField === "preferences"
+              ? "border-cyan-400 ring-2 ring-cyan-400/20"
+              : "border-white/10"
+            }
               `}
         >
           <Mail className="w-5 h-5 text-slate-500" />
@@ -326,11 +320,10 @@ export default function FormRegisterLogin({
                 px-4 py-3
                 transition-all
                 bg-white/[0.03]
-                ${
-                  focusField === "preferences"
-                    ? "border-cyan-400 ring-2 ring-cyan-400/20"
-                    : "border-white/10"
-                }
+                ${focusField === "preferences"
+                ? "border-cyan-400 ring-2 ring-cyan-400/20"
+                : "border-white/10"
+              }
               `}
           >
             <Lock className="w-5 h-5 text-slate-500" />

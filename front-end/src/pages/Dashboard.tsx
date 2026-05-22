@@ -672,7 +672,7 @@ export default function DashboardAdmin() {
                     value={campaign}
                     className="bg-slate-900"
                   >
-                    {campaign}
+                    {campaign.charAt(0).toUpperCase().concat(campaign.slice(1))}
                   </option>
                 ))}
               </select>
@@ -695,7 +695,7 @@ export default function DashboardAdmin() {
                     value={ord}
                     className="bg-slate-900"
                   >
-                    {ord}
+                    {ord.charAt(0).toUpperCase().concat(ord.slice(1))}
                   </option>
                 ))}
               </select>
